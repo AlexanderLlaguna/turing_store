@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Turing Store: accesorios informáticos funcionales, simples y confiables.">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Turing Store | Inicio</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100" data-page="inicio">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top" aria-label="Navegación principal">
+            <div class="container">
+                <a class="navbar-brand" href="index.html" aria-label="Turing Store, página de inicio">
+                    <img class="brand-logo" src="assets/logo-turing.svg" alt="">
+                    <span>Turing Store</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menú de navegación">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" data-page="inicio" href="index.html">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" data-page="catalogo" href="catalogo.html">Catálogo</a></li>
+                        <li class="nav-item"><a class="nav-link" data-page="producto" href="producto.html">Producto</a></li>
+                        <li class="nav-item"><a class="nav-link" data-page="carrito" href="carrito.html">Carrito</a></li>
+                        <li class="nav-item"><a class="nav-link" data-page="perfil" href="perfil.html">Mi perfil</a></li>
+                        <li class="nav-item"><a class="nav-link" data-page="admin" href="admin.html">Administración</a></li>
+                    </ul>
+                    <button class="btn btn-login btn-sm" id="btnLoginPlaceholder" type="button">Ingresar</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow-1">
+        <section class="hero">
+            <div class="container py-5 py-lg-6">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <span class="tag mb-3">Accesorios informáticos seleccionados</span>
+                        <h1 class="display-4 fw-bold">Tecnología simple para tu día a día.</h1>
+                        <p class="lead text-secondary">Equipá tu espacio con accesorios funcionales, confiables y con
+                            el respaldo que necesitás.</p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a class="btn btn-primary btn-lg" href="catalogo.html">Explorar productos</a>
+                            <a class="btn btn-outline-dark btn-lg" href="#beneficios">Conocer beneficios</a>
+                        </div>
+                        <div class="row g-3 mt-4" aria-label="Ventajas principales">
+                            <div class="col-4">
+                                <div class="metric"><strong>24 h</strong><span>Respuesta</span></div>
+                            </div>
+                            <div class="col-4">
+                                <div class="metric"><strong>Todo UY</strong><span>Envíos</span></div>
+                            </div>
+                            <div class="col-4">
+                                <div class="metric"><strong>30 días</strong><span>Cambios</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-card">
+                            <div class="hero-card-header" aria-hidden="true">
+                                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                            </div>
+                            <img src="assets/hero-tech.svg"
+                                alt="Escritorio minimalista con monitor, teclado, mouse y auriculares">
+                            <div class="floating-card">
+                                <span class="eyebrow">Selección Turing</span>
+                                <strong>Diseño y rendimiento</strong>
+                                <small>Accesorios para estudiar, trabajar y crear.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container py-5" id="productos" aria-labelledby="productos-titulo">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Nuestra selección</span>
+                    <h2 class="fw-bold" id="productos-titulo">Productos destacados</h2>
+                    <p class="text-secondary mb-0">Cuatro esenciales para mejorar tu espacio tecnológico.</p>
+                </div>
+                <span class="availability-note">Disponibles</span>
+            </div>
+
+            <div class="row g-4 mt-2">
+                <div class="col-md-6 col-xl-3">
+                    <article class="product-card">
+                        <div class="product-image"><img src="assets/teclado.svg" alt="Teclado mecánico compacto T-80"></div>
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <span class="eyebrow">Periféricos</span>
+                            <h3 class="h5 mt-2">Teclado mecánico T-80</h3>
+                            <p class="text-secondary small">Formato compacto, retroiluminación suave y conexión USB.</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+                                <strong class="price">$ 2.490</strong>
+                                <a class="btn btn-primary btn-sm" href="producto.html">Ver producto</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <article class="product-card">
+                        <div class="product-image"><img src="assets/mouse.svg" alt="Mouse inalámbrico Flow M2"></div>
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <span class="eyebrow">Periféricos</span>
+                            <h3 class="h5 mt-2">Mouse inalámbrico Flow M2</h3>
+                            <p class="text-secondary small">Diseño ergonómico, conexión estable y clic silencioso.</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+                                <strong class="price">$ 890</strong>
+                                <a class="btn btn-primary btn-sm" href="producto.html">Ver producto</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <article class="product-card">
+                        <div class="product-image"><img src="assets/auriculares.svg" alt="Auriculares Pulse H7 con micrófono"></div>
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <span class="eyebrow">Audio</span>
+                            <h3 class="h5 mt-2">Auriculares Pulse H7</h3>
+                            <p class="text-secondary small">Sonido claro, almohadillas cómodas y micrófono integrado.</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+                                <strong class="price">$ 1.790</strong>
+                                <a class="btn btn-primary btn-sm" href="producto.html">Ver producto</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <article class="product-card">
+                        <div class="product-image"><img src="assets/pendrive.svg" alt="Pendrive USB-C de 64 gigabytes"></div>
+                        <div class="p-4 d-flex flex-column flex-grow-1">
+                            <span class="eyebrow">Almacenamiento</span>
+                            <h3 class="h5 mt-2">Pendrive USB-C 64 GB</h3>
+                            <p class="text-secondary small">Compacto, resistente y compatible con USB-C y USB-A.</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+                                <strong class="price">$ 690</strong>
+                                <a class="btn btn-primary btn-sm" href="producto.html">Ver producto</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="benefits py-5" id="beneficios" aria-labelledby="beneficios-titulo">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="eyebrow eyebrow-light">Comprar con tranquilidad</span>
+                    <h2 class="fw-bold" id="beneficios-titulo">Una experiencia simple y confiable</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <article class="benefit-card">
+                            <span class="benefit-number" aria-hidden="true">01</span>
+                            <h3>Envíos a todo Uruguay</h3>
+                            <p>Recibí tus accesorios de forma rápida y con seguimiento.</p>
+                        </article>
+                    </div>
+                    <div class="col-md-4">
+                        <article class="benefit-card">
+                            <span class="benefit-number" aria-hidden="true">02</span>
+                            <h3>Garantía y respaldo</h3>
+                            <p>Productos seleccionados y cambios dentro de los primeros 30 días.</p>
+                        </article>
+                    </div>
+                    <div class="col-md-4">
+                        <article class="benefit-card">
+                            <span class="benefit-number" aria-hidden="true">03</span>
+                            <h3>Atención cercana</h3>
+                            <p>Te orientamos para que elijas el accesorio adecuado.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer py-4 mt-auto">
+        <div class="container footer-content">
+            <div>
+                <strong class="footer-brand">Turing Store</strong>
+                <p class="mb-0">© 2026 · Primer sprint de Desarrollo Web</p>
+            </div>
+            <nav class="footer-links" aria-label="Enlaces del pie de página">
+                <a href="index.html">Inicio</a>
+                <a href="catalogo.html">Catálogo</a>
+                <a href="mailto:contacto@turingstore.uy">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="appToast" class="toast" role="status" aria-live="polite">
+            <div class="toast-header"><strong class="me-auto">Turing Store</strong><button class="btn-close"
+                    data-bs-dismiss="toast" aria-label="Cerrar"></button></div>
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/base.js"></script>
+</body>
+
+</html>

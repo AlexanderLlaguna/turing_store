@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 270" role="img" aria-label="Pendrive USB-C">
+  <rect x="58" y="83" width="222" height="106" rx="30" fill="#0f172a"/>
+  <rect x="262" y="105" width="102" height="62" rx="12" fill="#94a3b8"/>
+  <rect x="298" y="117" width="48" height="38" rx="8" fill="#f8fafc"/>
+  <circle cx="104" cy="136" r="18" fill="none" stroke="#14b8a6" stroke-width="9"/>
+  <path d="M143 136h74" stroke="#334155" stroke-width="10" stroke-linecap="round"/>
+  <path d="M280 116v40" stroke="#64748b" stroke-width="5"/>
+</svg>
