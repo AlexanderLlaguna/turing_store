@@ -1,0 +1,38 @@
+const productos = [
+    {
+        id: "p1",
+        nombre: "Teclado mecánico T-80",
+        descripcion: "Formato compacto, retroiluminación suave y conexión USB.",
+        categoria: "Periféricos",
+        precio: 2490,
+        stock: 8,
+        imagen: "assets/teclado_mecanico_T_80.jpg",
+    },
+    {
+        id: "p2",
+        nombre: "Mouse gamer Flow M2",
+        descripcion: "Diseño ergonómico, iluminación RGB y conexióon USB.",
+        categoria: "Periféricos",
+        precio: 890,
+        stock: 12,
+        imagen: "assets/mouse_inalambrico_flowM2.jpg",        
+    },
+    {
+        id: "p3",
+        nombre: "Auriculares Pulse H7",
+        descripcion: "Sonido claro, almohadillas cómodas y micrófono integrado.",
+        categoria: "Audio",
+        precio: 1790,
+        stock: 6,
+        imagen: "assets/auriculares_pulse_H7.jpg",        
+    },
+    {
+        id: "p4",
+        nombre: "Pendrive UBS-C 64 GB",
+        descripcion: "Compacto, resistente y compatible con USB_C y USB-A.",
+        categoria: "Almacenamiento",
+        precio: 690,
+        stock: 15,
+        imagen: "assets/pendrive_USB_C_64_GB.jpg",
+    },
+];
