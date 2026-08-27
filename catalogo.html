@@ -47,8 +47,42 @@
                 </span>
             </div>
 
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label" for="buscarProducto">
+                        Buscar producto
+                    </label>
+
+                    <input class="form-control" type="search" id="buscarProducto"
+                        placeholder="Ejemplo: teclado o mouse">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="filtroCategoria">
+                        Categoría
+                    </label>
+
+                    <select class="form-select" id="filtroCategoria">
+                        <option value="todas">Todas las categorías</option>
+                        <option value="Periféricos">Periféricos</option>
+                        <option value="Audio">Audio</option>
+                        <option value="Almacenamiento">Almacenamiento</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-outline-primary w-100" id="limpiarFiltros" type="button">
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+
+            <p class="text-secondary" id="cantidadResultados">
+                4 productos encontrados
+            </p>
+
             <div class="row g-4" id="lista-productos">
-                <!-- Las tarjetas se generan desde JavaScript -->
+
             </div>
         </section>
     </main>
