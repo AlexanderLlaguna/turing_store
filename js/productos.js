@@ -6,7 +6,7 @@ const productos = [
         categoria: "Periféricos",
         precio: 2490,
         stock: 8,
-        imagen: "assets/teclado_mecanico_T_80.jpg",
+        imagen: "../assets/teclado_mecanico_T_80.jpg",
     },
     {
         id: "p2",
@@ -15,7 +15,7 @@ const productos = [
         categoria: "Periféricos",
         precio: 890,
         stock: 12,
-        imagen: "assets/mouse_inalambrico_flowM2.jpg",        
+        imagen: "../assets/mouse_inalambrico_flowM2.jpg",        
     },
     {
         id: "p3",
@@ -24,7 +24,7 @@ const productos = [
         categoria: "Audio",
         precio: 1790,
         stock: 6,
-        imagen: "assets/auriculares_pulse_H7.jpg",        
+        imagen: "../assets/auriculares_pulse_H7.jpg",        
     },
     {
         id: "p4",
@@ -33,6 +33,6 @@ const productos = [
         categoria: "Almacenamiento",
         precio: 690,
         stock: 15,
-        imagen: "assets/pendrive_USB_C_64_GB.jpg",
+        imagen: "../assets/pendrive_USB_C_64_GB.jpg",
     },
 ];
