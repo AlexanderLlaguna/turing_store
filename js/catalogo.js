@@ -52,20 +52,28 @@ function mostrarProductos(listaProductos) {
               Stock disponible: ${producto.stock}
             </p>
 
-            <div
-              class="mt-auto d-flex justify-content-between align-items-center gap-2"
-            >
-              <strong class="price">
-                $ ${producto.precio}
-              </strong>
+            <div class="mt-auto">
+  <strong class="price">
+    $ ${producto.precio}
+  </strong>
 
-              <a
-                class="btn btn-primary btn-sm"
-                href="producto.html?id=${producto.id}"
-              >
-                Ver producto
-              </a>
-            </div>
+  <div class="d-grid gap-2 mt-3">
+    <a
+      class="btn btn-outline-primary btn-sm"
+      href="producto.html?id=${producto.id}"
+    >
+      Ver producto
+    </a>
+
+    <button
+      class="btn btn-primary btn-sm btn-agregar-carrito"
+      type="button"
+      data-id="${producto.id}"
+    >
+      Agregar al carrito
+    </button>
+  </div>
+</div>
           </div>
         </article>
       </div>
@@ -111,3 +119,18 @@ botonLimpiar.addEventListener("click", () => {
 });
 
 mostrarProductos(productos);
+contenedorProductos.addEventListener("click", (evento) => {
+  const botonAgregar = evento.target.closest(
+    ".btn-agregar-carrito"
+  );
+
+  if (!botonAgregar) {
+    return;
+  }
+
+  const resultado = agregarAlCarrito(
+    botonAgregar.dataset.id
+  );
+
+  window.mostrarMensaje?.(resultado.mensaje);
+});
