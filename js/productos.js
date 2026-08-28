@@ -11,7 +11,7 @@ const productos = [
     {
         id: "p2",
         nombre: "Mouse gamer Flow M2",
-        descripcion: "Diseño ergonómico, iluminación RGB y conexióon USB.",
+        descripcion: "Diseño ergonómico, iluminación RGB y conexión USB.",
         categoria: "Periféricos",
         precio: 890,
         stock: 12,
@@ -28,8 +28,8 @@ const productos = [
     },
     {
         id: "p4",
-        nombre: "Pendrive UBS-C 64 GB",
-        descripcion: "Compacto, resistente y compatible con USB_C y USB-A.",
+        nombre: "Pendrive USB-C 64 GB",
+        descripcion: "Compacto, resistente y compatible con USB-C y USB-A.",
         categoria: "Almacenamiento",
         precio: 690,
         stock: 15,
