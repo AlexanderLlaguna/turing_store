@@ -180,7 +180,7 @@
           </div>
 
           <div class="col-lg-4">
-            <aside class="card border-0 shadow-sm">
+            <aside class="card border-0 shadow-sm resumen-carrito">
 
               <div class="card-body p-4">
 
@@ -195,8 +195,7 @@
 
                   <strong
                     class="h4"
-                    id="total-carrito"
-                  >
+                    id="total-carrito">
                     $ 0
                   </strong>
                 </div>
@@ -204,8 +203,7 @@
                 <button
                   class="btn btn-primary w-100 mt-3"
                   id="confirmar-compra"
-                  type="button"
-                >
+                  type="button">
                   Confirmar compra
                 </button>
 
@@ -220,6 +218,75 @@
 
       </section>
     </main>
+
+    <div
+  class="modal fade"
+  id="modal-confirmar-compra"
+  tabindex="-1"
+  aria-labelledby="titulo-modal-compra"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content modal-compra">
+
+      <div class="modal-header border-0 pb-0">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar"
+        ></button>
+      </div>
+
+      <div class="modal-body text-center px-4 pb-4">
+
+        <div class="modal-compra-icono">
+          🛒
+        </div>
+
+        <h2
+          class="h4 fw-bold mt-3"
+          id="titulo-modal-compra"
+        >
+          ¿Confirmar compra?
+        </h2>
+
+        <p class="text-secondary">
+          Revisá el total antes de finalizar.
+        </p>
+
+        <div class="modal-total">
+          <span>Total de la compra</span>
+
+          <strong id="total-modal-compra">
+            $ 0
+          </strong>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+
+          <button
+            class="btn btn-outline-secondary flex-fill"
+            type="button"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+
+          <button
+            class="btn btn-primary flex-fill"
+            id="finalizar-compra"
+            type="button"
+          >
+            Confirmar
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 
     <footer class="footer py-4 mt-auto">
       <div

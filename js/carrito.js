@@ -133,7 +133,7 @@ function mostrarCarrito() {
     total += subtotal;
 
     listaCarrito.innerHTML += `
-      <article class="card border-0 shadow-sm">
+      <article class="card border-0 shadow-sm carrito-item">
 
         <div class="card-body">
 
@@ -141,10 +141,9 @@ function mostrarCarrito() {
 
             <div class="col-md-3">
               <img
-                src="${producto.imagen}"
-                alt="${producto.nombre}"
-                class="img-fluid rounded"
-              >
+  src="${producto.imagen}"
+  alt="${producto.nombre}"
+  class="img-fluid rounded carrito-imagen">
             </div>
 
             <div class="col-md-5">
@@ -163,17 +162,52 @@ function mostrarCarrito() {
 
             </div>
 
-            <div class="col-md-2">
+           <div class="col-md-2">
 
-              <p class="mb-1">
-                Cantidad
-              </p>
+  <p class="mb-2">
+    Cantidad
+  </p>
 
-              <strong>
-                ${item.cantidad}
-              </strong>
+  <div
+    class="btn-group btn-group-sm"
+    role="group"
+    aria-label="Modificar cantidad"
+  >
+    <button
+      class="btn btn-outline-secondary"
+      type="button"
+      data-accion="disminuir"
+      data-id="${producto.id}"
+    >
+      −
+    </button>
 
-            </div>
+    <span
+      class="btn btn-outline-secondary disabled"
+    >
+      ${item.cantidad}
+    </span>
+
+    <button
+      class="btn btn-outline-secondary"
+      type="button"
+      data-accion="aumentar"
+      data-id="${producto.id}"
+    >
+      +
+    </button>
+  </div>
+
+  <button
+    class="btn btn-link text-danger btn-sm p-0 mt-2"
+    type="button"
+    data-accion="eliminar"
+    data-id="${producto.id}"
+  >
+    Eliminar
+  </button>
+
+</div>
 
             <div class="col-md-2 text-md-end">
 
@@ -200,4 +234,165 @@ function mostrarCarrito() {
 
 }
 
+function cambiarCantidad(idProducto, cambio) {
+
+  const carrito = obtenerCarrito();
+
+  const item = carrito.find(
+    (item) => item.id === idProducto
+  );
+
+  const producto = productos.find(
+    (producto) => producto.id === idProducto
+  );
+
+  if (!item || !producto) {
+    return;
+  }
+
+  const nuevaCantidad = item.cantidad + cambio;
+
+  if (nuevaCantidad < 1) {
+    window.mostrarMensaje?.(
+      "La cantidad mínima es 1. Podés eliminar el producto."
+    );
+
+    return;
+  }
+
+  if (nuevaCantidad > producto.stock) {
+    window.mostrarMensaje?.(
+      "No hay más unidades disponibles."
+    );
+
+    return;
+  }
+
+  item.cantidad = nuevaCantidad;
+
+  guardarCarrito(carrito);
+  mostrarCarrito();
+
+}
+
+function eliminarDelCarrito(idProducto) {
+
+  const carrito = obtenerCarrito();
+
+  const nuevoCarrito = carrito.filter(
+    (item) => item.id !== idProducto
+  );
+
+  guardarCarrito(nuevoCarrito);
+  mostrarCarrito();
+
+  window.mostrarMensaje?.(
+    "El producto fue eliminado del carrito."
+  );
+
+}
+
 mostrarCarrito();
+
+if (listaCarrito) {
+
+  listaCarrito.addEventListener("click", (evento) => {
+
+    const boton = evento.target.closest(
+      "[data-accion]"
+    );
+
+    if (!boton) {
+      return;
+    }
+
+    const idProducto = boton.dataset.id;
+    const accion = boton.dataset.accion;
+
+    if (accion === "aumentar") {
+      cambiarCantidad(idProducto, 1);
+    }
+
+    if (accion === "disminuir") {
+      cambiarCantidad(idProducto, -1);
+    }
+
+    if (accion === "eliminar") {
+      eliminarDelCarrito(idProducto);
+    }
+
+  });
+
+}
+
+const botonConfirmarCompra =
+  document.querySelector("#confirmar-compra");
+
+const elementoModalCompra =
+  document.querySelector("#modal-confirmar-compra");
+
+const botonFinalizarCompra =
+  document.querySelector("#finalizar-compra");
+
+const totalModalCompra =
+  document.querySelector("#total-modal-compra");
+
+let modalCompra;
+
+if (
+  botonConfirmarCompra &&
+  elementoModalCompra &&
+  totalModalCompra
+) {
+
+  modalCompra = new bootstrap.Modal(
+    elementoModalCompra
+  );
+
+  botonConfirmarCompra.addEventListener(
+    "click",
+    () => {
+
+      const carrito = obtenerCarrito();
+
+      if (carrito.length === 0) {
+        window.mostrarMensaje?.(
+          "El carrito está vacío."
+        );
+
+        return;
+      }
+
+      totalModalCompra.textContent =
+        totalCarrito.textContent;
+
+      modalCompra.show();
+
+    }
+  );
+
+}
+
+if (
+  botonFinalizarCompra &&
+  modalCompra
+) {
+
+  botonFinalizarCompra.addEventListener(
+    "click",
+    () => {
+
+      guardarCarrito([]);
+      mostrarCarrito();
+
+      modalCompra.hide();
+
+      window.mostrarMensaje?.(
+        "¡Compra confirmada correctamente!"
+      );
+
+    }
+  );
+
+}
+
