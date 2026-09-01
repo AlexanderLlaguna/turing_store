@@ -1,15 +1,20 @@
-const contenedorDetalle = document.querySelector("#detalle-producto");
+const contenedorDetalle =
+  document.querySelector("#detalle-producto");
 
-const parametrosURL = new URLSearchParams(window.location.search);
+const parametrosURL =
+  new URLSearchParams(window.location.search);
+
 const idProducto = parametrosURL.get("id");
 
 const productoSeleccionado = productos.find(
-    (producto) => producto.id === idProducto
+  (producto) => producto.id === idProducto
 );
 
 if (productoSeleccionado) {
-    contenedorDetalle.innerHTML = `
+
+  contenedorDetalle.innerHTML = `
     <div class="row align-items-center g-5">
+
       <div class="col-lg-6">
         <div class="product-image rounded">
           <img
@@ -21,6 +26,7 @@ if (productoSeleccionado) {
       </div>
 
       <div class="col-lg-6">
+
         <span class="eyebrow">
           ${productoSeleccionado.categoria}
         </span>
@@ -43,24 +49,65 @@ if (productoSeleccionado) {
           $ ${productoSeleccionado.precio}
         </p>
 
-        <a class="btn btn-outline-primary" href="catalogo.html">
-          Volver al catálogo
-        </a>
+        <div class="d-flex flex-wrap gap-2">
+
+          <button
+            class="btn btn-primary"
+            id="agregar-carrito"
+            type="button"
+          >
+            Agregar al carrito
+          </button>
+
+          <a
+            class="btn btn-outline-primary"
+            href="catalogo.html"
+          >
+            Volver al catálogo
+          </a>
+
+        </div>
+
       </div>
+
     </div>
   `;
+
+  const botonAgregar =
+    contenedorDetalle.querySelector("#agregar-carrito");
+
+  botonAgregar.addEventListener("click", () => {
+
+    const resultado = agregarAlCarrito(
+      productoSeleccionado.id
+    );
+
+    window.mostrarMensaje?.(resultado.mensaje);
+
+  });
+
 } else {
-    contenedorDetalle.innerHTML = `
-    <div class="alert alert-warning text-center" role="alert">
-      <h1 class="h4">Producto no encontrado</h1>
+
+  contenedorDetalle.innerHTML = `
+    <div
+      class="alert alert-warning text-center"
+      role="alert"
+    >
+      <h1 class="h4">
+        Producto no encontrado
+      </h1>
 
       <p>
         El producto solicitado no existe o el enlace es incorrecto.
       </p>
 
-      <a class="btn btn-primary" href="catalogo.html">
+      <a
+        class="btn btn-primary"
+        href="catalogo.html"
+      >
         Volver al catálogo
       </a>
     </div>
   `;
+
 }
