@@ -132,7 +132,7 @@ function mostrarCarrito() {
 
     total += subtotal;
 
-    listaCarrito.innerHTML += `
+    listaCarrito.innerHTML += /* html */ `
       <article class="card border-0 shadow-sm carrito-item">
 
         <div class="card-body">
@@ -164,50 +164,62 @@ function mostrarCarrito() {
 
            <div class="col-md-2">
 
-  <p class="mb-2">
+  <span class="cantidad-etiqueta">
     Cantidad
-  </p>
+  </span>
 
   <div
-    class="btn-group btn-group-sm"
+    class="selector-cantidad"
     role="group"
-    aria-label="Modificar cantidad"
+    aria-label="Modificar cantidad de ${producto.nombre}"
   >
     <button
-      class="btn btn-outline-secondary"
+      class="cantidad-boton"
       type="button"
       data-accion="disminuir"
       data-id="${producto.id}"
+      aria-label="Disminuir cantidad"
+      title="Disminuir"
     >
       −
     </button>
 
     <span
-      class="btn btn-outline-secondary disabled"
+      class="cantidad-valor"
+      aria-live="polite"
     >
       ${item.cantidad}
     </span>
 
     <button
-      class="btn btn-outline-secondary"
+      class="cantidad-boton"
       type="button"
       data-accion="aumentar"
       data-id="${producto.id}"
+      aria-label="Aumentar cantidad"
+      title="Aumentar"
     >
       +
     </button>
   </div>
 
+  <small class="cantidad-stock">
+    Stock máximo: ${producto.stock}
+  </small>
+
   <button
-    class="btn btn-link text-danger btn-sm p-0 mt-2"
+    class="btn-eliminar-carrito"
     type="button"
     data-accion="eliminar"
     data-id="${producto.id}"
   >
+    <span aria-hidden="true">×</span>
     Eliminar
   </button>
 
 </div>
+
+  
 
             <div class="col-md-2 text-md-end">
 

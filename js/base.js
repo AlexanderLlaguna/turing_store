@@ -124,3 +124,90 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
 });
+
+function crearBotonWhatsApp() {
+  if (document.querySelector(".whatsapp-flotante")) {
+    return;
+  }
+
+  const numeroWhatsApp = "59898291052";
+
+  let mensaje =
+    "Hola, quisiera realizar una consulta sobre Turing Store.";
+
+  const idProducto =
+    new URLSearchParams(window.location.search).get("id");
+
+  if (
+    idProducto &&
+    typeof productos !== "undefined"
+  ) {
+    const productoSeleccionado = productos.find(
+      (producto) => producto.id === idProducto
+    );
+
+    if (productoSeleccionado) {
+      mensaje =
+        `Hola, quisiera consultar por el producto: ` +
+        `${productoSeleccionado.nombre}.`;
+    }
+  }
+
+  const enlaceWhatsApp =
+    document.createElement("a");
+
+  enlaceWhatsApp.className =
+    "whatsapp-flotante";
+
+  enlaceWhatsApp.href =
+    `https://wa.me/${numeroWhatsApp}` +
+    `?text=${encodeURIComponent(mensaje)}`;
+
+  enlaceWhatsApp.target = "_blank";
+  enlaceWhatsApp.rel = "noopener noreferrer";
+
+  enlaceWhatsApp.setAttribute(
+    "aria-label",
+    "Consultar por WhatsApp"
+  );
+
+  enlaceWhatsApp.innerHTML = `
+    <span class="whatsapp-icono" aria-hidden="true">
+      <svg
+        viewBox="0 0 24 24"
+        width="26"
+        height="26"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M21 11.5a8.4 8.4 0 0 1-9 8.5
+             9.5 9.5 0 0 1-4-.9L3 21l1.7-4.6
+             A8.5 8.5 0 1 1 21 11.5Z"
+        ></path>
+        <path
+          d="M8.5 8.5c.5 3 2 4.5 5 5"
+        ></path>
+      </svg>
+    </span>
+
+    <span class="whatsapp-texto">
+      <strong>¿Necesitás ayuda?</strong>
+      <small>Escribinos por WhatsApp</small>
+    </span>
+  `;
+
+  document.body.appendChild(enlaceWhatsApp);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    crearBotonWhatsApp
+  );
+} else {
+  crearBotonWhatsApp();
+}

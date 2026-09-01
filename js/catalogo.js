@@ -1,8 +1,17 @@
-const contenedorProductos = document.querySelector("#lista-productos");
-const campoBusqueda = document.querySelector("#buscarProducto");
-const filtroCategoria = document.querySelector("#filtroCategoria");
-const botonLimpiar = document.querySelector("#limpiarFiltros");
-const cantidadResultados = document.querySelector("#cantidadResultados");
+const contenedorProductos =
+  document.querySelector("#lista-productos");
+
+const campoBusqueda =
+  document.querySelector("#buscarProducto");
+
+const filtroCategoria =
+  document.querySelector("#filtroCategoria");
+
+const botonLimpiar =
+  document.querySelector("#limpiarFiltros");
+
+const cantidadResultados =
+  document.querySelector("#cantidadResultados");
 
 function normalizarTexto(texto) {
   return texto
@@ -25,14 +34,27 @@ function mostrarProductos(listaProductos) {
   }
 
   for (const producto of listaProductos) {
-    contenedorProductos.innerHTML += `
+    const resumenValoracion =
+      obtenerResumenValoracion(producto);
+
+    const promedioFormateado =
+      resumenValoracion.promedio
+        .toFixed(1)
+        .replace(".", ",");
+
+    const palabraValoracion =
+      resumenValoracion.cantidad === 1
+        ? "valoración"
+        : "valoraciones";
+
+    contenedorProductos.innerHTML += /* html */ `
       <div class="col-md-6 col-xl-3">
         <article class="product-card">
           <div class="product-image">
             <img
               src="${producto.imagen}"
               alt="${producto.nombre}"
-            >
+            />
           </div>
 
           <div class="p-4 d-flex flex-column flex-grow-1">
@@ -48,32 +70,44 @@ function mostrarProductos(listaProductos) {
               ${producto.descripcion}
             </p>
 
-            <p class="small">
+            <div class="valoracion-resumen">
+              ${crearEstrellas(
+      resumenValoracion.promedio
+    )}
+
+              <span class="valoracion-texto">
+                ${promedioFormateado}
+                (${resumenValoracion.cantidad}
+                ${palabraValoracion})
+              </span>
+            </div>
+
+            <p class="small mt-3">
               Stock disponible: ${producto.stock}
             </p>
 
             <div class="mt-auto">
-  <strong class="price">
-    $ ${producto.precio}
-  </strong>
+              <strong class="price">
+                $ ${producto.precio}
+              </strong>
 
-  <div class="d-grid gap-2 mt-3">
-    <a
-      class="btn btn-outline-primary btn-sm"
-      href="producto.html?id=${producto.id}"
-    >
-      Ver producto
-    </a>
+              <div class="d-grid gap-2 mt-3">
+                <a
+                  class="btn btn-outline-primary btn-sm"
+                  href="producto.html?id=${producto.id}"
+                >
+                  Ver producto
+                </a>
 
-    <button
-      class="btn btn-primary btn-sm btn-agregar-carrito"
-      type="button"
-      data-id="${producto.id}"
-    >
-      Agregar al carrito
-    </button>
-  </div>
-</div>
+                <button
+                  class="btn btn-primary btn-sm btn-agregar-carrito"
+                  type="button"
+                  data-id="${producto.id}"
+                >
+                  Agregar al carrito
+                </button>
+              </div>
+            </div>
           </div>
         </article>
       </div>
@@ -81,36 +115,58 @@ function mostrarProductos(listaProductos) {
   }
 
   const palabraProducto =
-    listaProductos.length === 1 ? "producto encontrado" : "productos encontrados";
+    listaProductos.length === 1
+      ? "producto encontrado"
+      : "productos encontrados";
 
   cantidadResultados.textContent =
     `${listaProductos.length} ${palabraProducto}`;
 }
 
 function aplicarFiltros() {
-  const textoBuscado = normalizarTexto(campoBusqueda.value.trim());
-  const categoriaSeleccionada = filtroCategoria.value;
+  const textoBuscado = normalizarTexto(
+    campoBusqueda.value.trim()
+  );
 
-  const productosFiltrados = productos.filter((producto) => {
-    const nombre = normalizarTexto(producto.nombre);
-    const descripcion = normalizarTexto(producto.descripcion);
+  const categoriaSeleccionada =
+    filtroCategoria.value;
 
-    const coincideBusqueda =
-      nombre.includes(textoBuscado) ||
-      descripcion.includes(textoBuscado);
+  const productosFiltrados = productos.filter(
+    (producto) => {
+      const nombre =
+        normalizarTexto(producto.nombre);
 
-    const coincideCategoria =
-      categoriaSeleccionada === "todas" ||
-      producto.categoria === categoriaSeleccionada;
+      const descripcion =
+        normalizarTexto(producto.descripcion);
 
-    return coincideBusqueda && coincideCategoria;
-  });
+      const coincideBusqueda =
+        nombre.includes(textoBuscado) ||
+        descripcion.includes(textoBuscado);
+
+      const coincideCategoria =
+        categoriaSeleccionada === "todas" ||
+        producto.categoria ===
+        categoriaSeleccionada;
+
+      return (
+        coincideBusqueda &&
+        coincideCategoria
+      );
+    }
+  );
 
   mostrarProductos(productosFiltrados);
 }
 
-campoBusqueda.addEventListener("input", aplicarFiltros);
-filtroCategoria.addEventListener("change", aplicarFiltros);
+campoBusqueda.addEventListener(
+  "input",
+  aplicarFiltros
+);
+
+filtroCategoria.addEventListener(
+  "change",
+  aplicarFiltros
+);
 
 botonLimpiar.addEventListener("click", () => {
   campoBusqueda.value = "";
@@ -119,18 +175,25 @@ botonLimpiar.addEventListener("click", () => {
 });
 
 mostrarProductos(productos);
-contenedorProductos.addEventListener("click", (evento) => {
-  const botonAgregar = evento.target.closest(
-    ".btn-agregar-carrito"
-  );
 
-  if (!botonAgregar) {
-    return;
+contenedorProductos.addEventListener(
+  "click",
+  (evento) => {
+    const botonAgregar =
+      evento.target.closest(
+        ".btn-agregar-carrito"
+      );
+
+    if (!botonAgregar) {
+      return;
+    }
+
+    const resultado = agregarAlCarrito(
+      botonAgregar.dataset.id
+    );
+
+    window.mostrarMensaje?.(
+      resultado.mensaje
+    );
   }
-
-  const resultado = agregarAlCarrito(
-    botonAgregar.dataset.id
-  );
-
-  window.mostrarMensaje?.(resultado.mensaje);
-});
+);

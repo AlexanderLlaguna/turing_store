@@ -121,3 +121,14 @@ Al recuperar el carrito, el texto almacenado se transforma nuevamente en un arre
 Se mantuvo una estética minimalista basada en azul noche, blanco, gris claro y turquesa. Las tarjetas utilizan bordes suaves, espacios amplios y sombras discretas. El logotipo combina la letra "T" (Allan Turing) con nodos inspirados en circuitos electrónicos.
 
 La lógica JavaScript se distribuyó en diferentes archivos para evitar concentrar todas las funciones en un único documento y facilitar el mantenimiento del proyecto.
+
+*Mejoras adicionales del Sprint 2*
+
+- Catálogo ampliado a ocho productos.
+- Distribución equilibrada de productos por categoría.
+- Nueva imagen principal adaptada a la identidad de Turing Store.
+- Botón flotante de contacto mediante WhatsApp.
+- Mensaje de WhatsApp personalizado desde el detalle del producto.
+- Sistema de calificación de productos mediante estrellas.
+- Cálculo dinámico del promedio y cantidad de valoraciones.
+- Conservación de la valoración del usuario mediante LocalStorage.
