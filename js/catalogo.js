@@ -7,6 +7,9 @@ const campoBusqueda =
 const filtroCategoria =
   document.querySelector("#filtroCategoria");
 
+const ordenProductos =
+  document.querySelector("#ordenProductos");
+
 const botonLimpiar =
   document.querySelector("#limpiarFiltros");
 
@@ -155,7 +158,35 @@ function aplicarFiltros() {
     }
   );
 
-  mostrarProductos(productosFiltrados);
+  const productosOrdenados = [
+    ...productosFiltrados,
+  ];
+
+  if (ordenProductos.value === "nombre-asc") {
+    productosOrdenados.sort(
+      (productoA, productoB) =>
+        productoA.nombre.localeCompare(
+          productoB.nombre,
+          "es"
+        )
+    );
+  }
+
+  if (ordenProductos.value === "precio-asc") {
+    productosOrdenados.sort(
+      (productoA, productoB) =>
+        productoA.precio - productoB.precio
+    );
+  }
+
+  if (ordenProductos.value === "precio-desc") {
+    productosOrdenados.sort(
+      (productoA, productoB) =>
+        productoB.precio - productoA.precio
+    );
+  }
+
+  mostrarProductos(productosOrdenados);
 }
 
 campoBusqueda.addEventListener(
@@ -168,9 +199,15 @@ filtroCategoria.addEventListener(
   aplicarFiltros
 );
 
+ordenProductos.addEventListener(
+  "change",
+  aplicarFiltros
+);
+
 botonLimpiar.addEventListener("click", () => {
   campoBusqueda.value = "";
   filtroCategoria.value = "todas";
+  ordenProductos.value = "predeterminado";
   aplicarFiltros();
 });
 

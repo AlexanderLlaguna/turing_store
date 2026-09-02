@@ -88,7 +88,7 @@
           <span class="availability-note">Productos disponibles</span>
         </div>
         <div class="row g-3 mb-4">
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label" for="buscarProducto"
               >Buscar producto</label
             ><input
@@ -98,13 +98,22 @@
               placeholder="Ejemplo: teclado o mouse"
             />
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <label class="form-label" for="filtroCategoria">Categoría</label
             ><select class="form-select" id="filtroCategoria">
               <option value="todas">Todas las categorías</option>
               <option value="Periféricos">Periféricos</option>
               <option value="Audio">Audio</option>
               <option value="Almacenamiento">Almacenamiento</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label" for="ordenProductos">Ordenar por</label
+            ><select class="form-select" id="ordenProductos">
+              <option value="predeterminado">Predeterminado</option>
+              <option value="nombre-asc">Nombre: A a Z</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
             </select>
           </div>
           <div class="col-md-2 d-flex align-items-end">
