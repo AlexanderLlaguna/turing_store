@@ -132,3 +132,6 @@ La lógica JavaScript se distribuyó en diferentes archivos para evitar concentr
 - Sistema de calificación de productos mediante estrellas.
 - Cálculo dinámico del promedio y cantidad de valoraciones.
 - Conservación de la valoración del usuario mediante LocalStorage.
+- Visualización dinámica de la cantidad de productos encontrados.
+ - Ordenamiento de productos por nombre y precio.
+ 
