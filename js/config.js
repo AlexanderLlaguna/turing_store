@@ -8,7 +8,7 @@ import { getFirestore } from
     "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDmf6vKwIylTMXcr9uN8i0AVuyqqkHRnBo",
+    apiKey: "AIzaSyDmf6vKwIyLTMXcr9uN8i0AVuyqqkHRnBo",
     authDomain: "turing-store-d12f5.firebaseapp.com",
     projectId: "turing-store-d12f5",
     storageBucket: "turing-store-d12f5.firebasestorage.app",
