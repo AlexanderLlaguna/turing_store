@@ -133,5 +133,55 @@ La lógica JavaScript se distribuyó en diferentes archivos para evitar concentr
 - Cálculo dinámico del promedio y cantidad de valoraciones.
 - Conservación de la valoración del usuario mediante LocalStorage.
 - Visualización dinámica de la cantidad de productos encontrados.
- - Ordenamiento de productos por nombre y precio.
- 
+- Ordenamiento de productos por nombre y precio.
+
+## Sprint 2 - Catálogo, producto y carrito
+
+Durante el Sprint 2 se incorporó comportamiento dinámico a Turing Store mediante JavaScript.
+
+### Funcionalidades implementadas
+
+- Generación dinámica delcatálogo desde un arreglo de productos.
+- Búsqueda de productos por nombre.
+- Filtrado de productos por categoría.
+- Ordenamiento por nombre y precio.
+- Visualización de la cantidad de resultados.
+- Página dinámica de detalle utilizando parámetros en la URL.
+- Información de nombre, imagen, descripción, precio y stock.
+- Sistema de valoraciones y promedio de estrellas.
+- Incorporación de productos al carrito.
+- Aumento y disminución de cantidades.
+- Eliminación de productos.
+- Validación de cantidades según el stock disponible.
+- Cálculo automático del total.
+- Conservación del carrito al recargar la página.
+- Botón flotante de contacto mediante WhatsApp.
+
+### Representación de los productos
+
+Los productos se almacenan como objetos dentro de un arreglo en
+`js/productos.js`.
+
+Cada producto contiene información como:
+
+- Identificador.
+- Nombre.
+- Descripción.
+- Categoría.
+- Precio.
+- Stock.
+- Imagen.
+- Valoraciones.
+
+### Organización de JavaScript
+
+- `productos.js`: contiene los productos de la tienda.
+- `catalogo.js`: genera el catálogo, los filtros y el ordenamiento.
+- `producto.js`: muestra el detalle del producto seleccionado.
+- `carrito.js`: administra los productos y cantidades del carrito.
+- `valoraciones.js`: calcula y muestra las valoraciones.
+- `base.js`: contiene funciones compartidas de navegación e interfaz.
+
+### LocalStorage
+
+El carrito se conserva en el navegador mediante `LocalStorage`.

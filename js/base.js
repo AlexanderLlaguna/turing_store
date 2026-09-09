@@ -118,11 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .show();
   };
 
-  botonIngresar?.addEventListener("click", () => {
-    window.mostrarMensaje(
-      "El inicio de sesión será desarrollado en el Sprint 3."
-    );
-  });
 });
 
 function crearBotonWhatsApp() {
