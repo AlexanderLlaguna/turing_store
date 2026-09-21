@@ -79,9 +79,8 @@ async function cargarPedidos(usuarioId) {
                 return fechaB - fechaA;
             });
 
-        cantidadPedidos.textContent = `${pedidos.length} ${
-            pedidos.length === 1 ? "pedido" : "pedidos"
-        }`;
+        cantidadPedidos.textContent = `${pedidos.length} ${pedidos.length === 1 ? "pedido" : "pedidos"
+            }`;
 
         if (!pedidos.length) {
             listaPedidos.innerHTML = `
@@ -94,6 +93,10 @@ async function cargarPedidos(usuarioId) {
         listaPedidos.innerHTML = pedidos.map((pedido) => {
             const fecha = pedido.fecha?.toDate?.().toLocaleString("es-UY")
                 || "Fecha pendiente";
+
+            const numeroVisible = pedido.numeroPedido
+                || `TS-${pedido.id.slice(0, 6).toUpperCase()}`;
+
             const productosPedido = Array.isArray(pedido.productos)
                 ? pedido.productos
                 : [];
@@ -103,7 +106,7 @@ async function cargarPedidos(usuarioId) {
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between gap-3 flex-wrap mb-3">
                             <div>
-                                <strong>Pedido ${pedido.id}</strong>
+                                <strong>Pedido ${escaparHTML(numeroVisible)}</strong>
                                 <div class="small text-secondary">${fecha}</div>
                             </div>
                             <span class="badge text-bg-success text-capitalize">

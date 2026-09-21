@@ -154,6 +154,17 @@ function eliminarDelCarrito(idProducto) {
   window.mostrarMensaje?.("El producto fue eliminado del carrito.");
 }
 
+function generarNumeroPedido() {
+  const ahora = new Date();
+
+  const anio = ahora.getFullYear();
+  const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+  const dia = String(ahora.getDate()).padStart(2, "0");
+  const codigo = String(Date.now()).slice(-6);
+
+  return `TS-${anio}${mes}${dia}-${codigo}`;
+}
+
 async function registrarCompra() {
   const usuario = auth.currentUser;
   const carrito = obtenerCarrito();
@@ -165,6 +176,7 @@ async function registrarCompra() {
     throw new Error("El carrito está vacío.");
   }
 
+  const numeroPedido = generarNumeroPedido();
   const referenciaPedido = doc(collection(db, "pedidos"));
 
   await runTransaction(db, async (transaccion) => {
@@ -210,6 +222,7 @@ async function registrarCompra() {
     });
 
     transaccion.set(referenciaPedido, {
+      numeroPedido,
       usuarioId: usuario.uid,
       usuarioCorreo: usuario.email,
       productos: detalles.map(({ stockActual, ...detalle }) => detalle),
@@ -219,7 +232,7 @@ async function registrarCompra() {
     });
   });
 
-  return referenciaPedido.id;
+  return numeroPedido;
 }
 
 async function iniciarPaginaCarrito() {
