@@ -3,6 +3,7 @@ import { auth, db } from "./config.js";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    sendPasswordResetEmail,
     updateProfile,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
@@ -14,6 +15,9 @@ import {
 
 const formIngreso =
     document.querySelector("#formIngreso");
+
+const botonRecuperarClave =
+    document.querySelector("#btnRecuperarClave");
 
 const formRegistro =
     document.querySelector("#formRegistro");
@@ -178,3 +182,29 @@ formIngreso?.addEventListener(
         }
     }
 );
+
+//Recuperar la seña
+botonRecuperarClave?.addEventListener("click", async () => {
+    const correo = document
+        .querySelector("#correoIngreso")
+        .value
+        .trim();
+
+    if (!correo) {
+        window.mostrarMensaje(
+            "Escribí tu correo electrónico para recuperar la contraseña."
+        );
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, correo);
+
+        window.mostrarMensaje(
+            "Te enviamos un correo para restablecer tu contraseña. Revisá también el spam."
+        );
+    } catch (error) {
+        console.error("Error al recuperar la contraseña:", error);
+        window.mostrarMensaje(obtenerMensajeError(error.code));
+    }
+});
