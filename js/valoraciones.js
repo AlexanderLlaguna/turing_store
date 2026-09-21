@@ -1,94 +1,91 @@
-const CLAVE_VALORACIONES =
-  "turingStoreValoraciones";
+import { auth, db } from "./config.js";
 
-function obtenerValoracionesUsuario() {
-  const valoracionesGuardadas =
-    localStorage.getItem(CLAVE_VALORACIONES);
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  where,
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-  if (!valoracionesGuardadas) {
-    return {};
-  }
+export function crearEstrellas(promedio) {
+  const porcentaje = Math.max(0, Math.min(100, (promedio / 5) * 100));
 
-  try {
-    return JSON.parse(valoracionesGuardadas);
-  } catch (error) {
-    return {};
-  }
+  return `
+    <span class="estrellas" style="--relleno-estrellas: ${porcentaje}%"
+      aria-label="${promedio.toFixed(1)} de 5 estrellas">
+      <span class="estrellas-base" aria-hidden="true">★★★★★</span>
+      <span class="estrellas-relleno" aria-hidden="true">★★★★★</span>
+    </span>
+  `;
 }
 
-function obtenerValoracionUsuario(idProducto) {
-  const valoraciones =
-    obtenerValoracionesUsuario();
-
-  return valoraciones[idProducto] || 0;
-}
-
-function guardarValoracion(
-  idProducto,
-  valor
-) {
-  const valoraciones =
-    obtenerValoracionesUsuario();
-
-  valoraciones[idProducto] = valor;
-
-  localStorage.setItem(
-    CLAVE_VALORACIONES,
-    JSON.stringify(valoraciones)
+export function calcularResumen(valoraciones) {
+  const cantidad = valoraciones.length;
+  const suma = valoraciones.reduce(
+    (total, valoracion) => total + Number(valoracion.puntuacion || 0),
+    0
   );
-}
-
-function obtenerResumenValoracion(producto) {
-  const promedioInicial =
-    producto.calificacion || 0;
-
-  const cantidadInicial =
-    producto.valoraciones || 0;
-
-  const valorUsuario =
-    obtenerValoracionUsuario(producto.id);
-
-  let totalPuntos =
-    promedioInicial * cantidadInicial;
-
-  let cantidadTotal = cantidadInicial;
-
-  if (valorUsuario > 0) {
-    totalPuntos += valorUsuario;
-    cantidadTotal++;
-  }
-
-  const promedio =
-    cantidadTotal > 0
-      ? totalPuntos / cantidadTotal
-      : 0;
 
   return {
-    promedio,
-    cantidad: cantidadTotal,
-    valorUsuario,
+    promedio: cantidad ? suma / cantidad : 0,
+    cantidad,
   };
 }
 
-function crearEstrellas(promedio) {
-  const porcentaje = Math.max(
-    0,
-    Math.min(100, (promedio / 5) * 100)
+export async function obtenerTodasLasValoraciones() {
+  const respuesta = await getDocs(collection(db, "valoraciones"));
+  return respuesta.docs.map((documento) => ({
+    id: documento.id,
+    ...documento.data(),
+  }));
+}
+
+export async function obtenerValoracionesProducto(idProducto) {
+  const consulta = query(
+    collection(db, "valoraciones"),
+    where("productoId", "==", idProducto)
   );
 
-  return `
-    <span
-      class="estrellas"
-      style="--relleno-estrellas: ${porcentaje}%"
-      aria-label="${promedio.toFixed(1)} de 5 estrellas"
-    >
-      <span class="estrellas-base" aria-hidden="true">
-        ★★★★★
-      </span>
+  const respuesta = await getDocs(consulta);
+  return respuesta.docs
+    .map((documento) => ({ id: documento.id, ...documento.data() }))
+    .sort((a, b) => {
+      const fechaA = a.fecha?.toMillis?.() || 0;
+      const fechaB = b.fecha?.toMillis?.() || 0;
+      return fechaB - fechaA;
+    });
+}
 
-      <span class="estrellas-relleno" aria-hidden="true">
-        ★★★★★
-      </span>
-    </span>
-  `;
+export async function guardarValoracion(idProducto, puntuacion, comentario) {
+  const usuario = auth.currentUser;
+
+  if (!usuario) {
+    throw new Error("Debes iniciar sesión para publicar una valoración.");
+  }
+
+  const puntaje = Number(puntuacion);
+  const texto = comentario.trim();
+
+  if (!Number.isInteger(puntaje) || puntaje < 1 || puntaje > 5) {
+    throw new Error("Selecciona una puntuación entre 1 y 5 estrellas.");
+  }
+
+  if (texto.length < 3 || texto.length > 300) {
+    throw new Error("El comentario debe tener entre 3 y 300 caracteres.");
+  }
+
+  // Un documento por usuario y producto: una nueva opinión actualiza la anterior.
+  const idValoracion = `${usuario.uid}_${idProducto}`;
+
+  await setDoc(doc(db, "valoraciones", idValoracion), {
+    usuarioId: usuario.uid,
+    usuarioNombre: usuario.displayName || usuario.email || "Usuario",
+    productoId: idProducto,
+    puntuacion: puntaje,
+    comentario: texto,
+    fecha: serverTimestamp(),
+  });
 }

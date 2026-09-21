@@ -1,10 +1,10 @@
-*Turing Store 2 - Sprint 2*
+*Turing Store - Sprint 3*
 
 Proyecto orientado a la venta de accesorios informáticos.
 
 *Descripción*
 
-Turing Store es una tienda web de accesorios tecnológicos para estudiar, trabajar y crear. En el sprint 2 se incorporó interactividad mediante JS, incluyendo un catálogo dinámico, búsqueda y filtros, detalle individual de productos y un carrito de compras persistente.
+Turing Store es una tienda web de accesorios tecnológicos para estudiar, trabajar y crear. En el Sprint 3 se incorporaron Firebase Authentication, Cloud Firestore, pedidos, control de stock, historial de compras y valoraciones de usuarios.
 
 *Público objetivo*
 
@@ -104,7 +104,7 @@ Al recuperar el carrito, el texto almacenado se transforma nuevamente en un arre
 - El carrito permanece guardado al recargar.
 - No se detectaron errores relevantes de JavaScript en la consola del navegador.
 
-*Funcionalidades pendientes para el siguiente sprint*
+*Base prevista al comenzar el Sprint 3*
 
 - Registro e inicio de sesión real.
 - Firebase Authentication.
@@ -185,3 +185,42 @@ Cada producto contiene información como:
 ### LocalStorage
 
 El carrito se conserva en el navegador mediante `LocalStorage`.
+
+## Sprint 3 - Firebase, pedidos y valoraciones
+
+### Funcionalidades incorporadas
+
+- Registro, ingreso, cierre de sesión y perfil mediante Firebase Authentication.
+- Identificación del usuario activo en la barra de navegación mediante su nombre.
+- Documento de perfil en `usuarios/{uid}` con nombre, correo y rol.
+- Catálogo y detalle obtenidos desde la colección `productos` de Cloud Firestore.
+- Comprobación de sesión antes de confirmar una compra.
+- Confirmación mediante una transacción que vuelve a verificar precios y stock.
+- Registro del pedido con usuario, productos, cantidades, precios, subtotales, total,
+  fecha y estado.
+- Descuento de stock y cambio de disponibilidad dentro de la misma transacción.
+- Vaciado del carrito únicamente después de una compra correcta.
+- Historial de pedidos del usuario autenticado dentro de su perfil.
+- Valoraciones y comentarios en Firestore, asociados al usuario y al producto.
+- Panel protegido por rol administrador para cargar productos y consultar pedidos.
+- Reglas de seguridad incluidas en `firestore.rules`.
+
+### Colecciones de Firestore
+
+- `usuarios`: perfiles y roles.
+- `productos`: catálogo, precios, stock y disponibilidad.
+- `pedidos`: compras realizadas por los usuarios.
+- `valoraciones`: puntuación y comentario de cada usuario por producto.
+
+### Preparación inicial
+
+1. Publicar el contenido de `firestore.rules` en Firebase Console.
+2. Registrar una cuenta desde Turing Store.
+3. En Firebase Console, cambiar temporalmente el campo `rol` de esa cuenta a
+   `admin` dentro de `usuarios/{uid}`.
+4. Ingresar nuevamente y abrir `pages/admin.html`.
+5. Presionar **Cargar productos iniciales** una sola vez.
+6. Comprobar el catálogo, realizar una compra y revisar el pedido en el perfil.
+
+El arreglo anterior dejó de ser la fuente principal del catálogo. Los datos de
+`productosIniciales` se conservan únicamente para la primera carga administrativa.

@@ -91,40 +91,51 @@
 
     <main class="flex-grow-1">
       <div class="container py-5">
-        <section class="locked-module">
-          <div class="locked-icon">🛡️</div>
+        <div id="cargandoAdmin" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Comprobando permisos…</span>
+          </div>
+          <p class="mt-3">Comprobando permisos de administración…</p>
+        </div>
 
-          <span class="badge rounded-pill text-bg-warning mb-3">
-            Sprint 3 · Semanas 9 a 12
-          </span>
+        <section id="accesoDenegado" class="alert alert-danger d-none" role="alert">
+          No tienes permisos para ingresar al panel administrativo.
+        </section>
 
-          <h1>Panel administrativo</h1>
-
-          <p class="lead">
-            Solo será visible para administradores autenticados.
-          </p>
-
-          <div class="locked-card">
-            <h2 class="h5">Funcionalidad en desarrollo</h2>
-
-            <p>
-              Este módulo forma parte de la arquitectura final, pero su código
-              deberá desarrollarse en el sprint indicado.
-            </p>
-
-            <ul>
-              <li>Validación de rol</li>
-              <li>Alta de productos</li>
-              <li>Edición</li>
-              <li>Eliminación o baja</li>
-              <li>Stock y disponibilidad</li>
-              <li>Consulta de pedidos</li>
-            </ul>
+        <section id="contenidoAdmin" class="d-none">
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+            <div>
+              <span class="badge rounded-pill text-bg-warning mb-2">Sprint 3</span>
+              <h1>Panel administrativo</h1>
+              <p class="lead mb-0">Productos, stock y pedidos registrados en Firestore.</p>
+            </div>
+            <button class="btn btn-primary" id="btnCargarProductos" type="button">
+              Cargar productos iniciales
+            </button>
           </div>
 
-          <a class="btn btn-outline-primary mt-3" href="../index.html">
-            Volver al inicio
-          </a>
+          <div class="row g-3 mb-5">
+            <div class="col-md-6">
+              <div class="card shadow-sm"><div class="card-body">
+                <small class="text-secondary">Productos</small>
+                <strong class="display-6 d-block" id="totalProductos">0</strong>
+              </div></div>
+            </div>
+            <div class="col-md-6">
+              <div class="card shadow-sm"><div class="card-body">
+                <small class="text-secondary">Pedidos</small>
+                <strong class="display-6 d-block" id="totalPedidos">0</strong>
+              </div></div>
+            </div>
+          </div>
+
+          <h2 class="h3">Pedidos recientes</h2>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead><tr><th>Pedido</th><th>Usuario</th><th>Fecha</th><th>Estado</th><th>Total</th></tr></thead>
+              <tbody id="tablaPedidos"></tbody>
+            </table>
+          </div>
         </section>
       </div>
     </main>
@@ -132,7 +143,7 @@
     <footer class="footer py-4 mt-auto">
       <div class="container d-flex justify-content-between flex-wrap gap-2">
         <span>© 2026 Turing Store · Sprint 3</span>
-        <span>Funcionalidad en desarrollo</span>
+        <span>Firebase, pedidos y administración</span>
       </div>
     </footer>
 
@@ -155,5 +166,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/base.js"></script>
     <script type="module" src="../js/sesion.js"></script>
+    <script type="module" src="../js/admin.js"></script>
   </body>
 </html>
