@@ -1,26 +1,272 @@
+const CLAVE_ESCALA_VISUAL = "turingStoreEscalaVisual";
+const ESCALA_MINIMA = 100;
+const ESCALA_MAXIMA = 200;
+const PASO_ESCALA = 25;
+
+function limitarEscala(valor) {
+  const numero = Number(valor);
+
+  if (!Number.isFinite(numero)) {
+    return ESCALA_MINIMA;
+  }
+
+  const escalaAjustada =
+    Math.round(numero / PASO_ESCALA) * PASO_ESCALA;
+
+  return Math.min(
+    ESCALA_MAXIMA,
+    Math.max(ESCALA_MINIMA, escalaAjustada)
+  );
+}
+
+function obtenerEscalaGuardada() {
+  try {
+    const escalaGuardada = localStorage.getItem(
+      CLAVE_ESCALA_VISUAL
+    );
+
+    return escalaGuardada
+      ? limitarEscala(escalaGuardada)
+      : ESCALA_MINIMA;
+  } catch (error) {
+    return ESCALA_MINIMA;
+  }
+}
+
+function aplicarEscalaVisual(valor) {
+  const escala = limitarEscala(valor);
+
+  document.documentElement.style.fontSize =
+    `${escala}%`;
+
+  document.documentElement.dataset.escalaVisual =
+    escala;
+
+  return escala;
+}
+
+function guardarEscalaVisual(valor) {
+  const escala = aplicarEscalaVisual(valor);
+
+  try {
+    localStorage.setItem(
+      CLAVE_ESCALA_VISUAL,
+      escala.toString()
+    );
+  } catch (error) {
+    console.warn(
+      "No fue posible guardar la escala visual.",
+      error
+    );
+  }
+
+  return escala;
+}
+
+// Aplica la preferencia antes de crear el control.
+let escalaVisualActual = aplicarEscalaVisual(
+  obtenerEscalaGuardada()
+);
+
+function crearControlAccesibilidad() {
+  const contenedor = document.createElement("div");
+
+  contenedor.className =
+    "dropdown control-accesibilidad";
+
+  contenedor.innerHTML = `
+    <button
+      class="btn btn-outline-light btn-sm boton-accesibilidad"
+      id="btnAccesibilidad"
+      type="button"
+      data-bs-toggle="dropdown"
+      data-bs-auto-close="outside"
+      aria-expanded="false"
+      aria-label="Abrir opciones de accesibilidad visual"
+      title="Accesibilidad visual"
+    >
+      <span aria-hidden="true">A±</span>
+    </button>
+
+    <div
+      class="dropdown-menu dropdown-menu-end panel-accesibilidad"
+      aria-labelledby="btnAccesibilidad"
+    >
+      <div class="accesibilidad-encabezado">
+        <div>
+          <strong>Accesibilidad visual</strong>
+
+          <small>
+            Aumentá el tamaño del contenido
+          </small>
+        </div>
+
+        <span
+          class="escala-actual"
+          id="valorEscalaVisual"
+          aria-live="polite"
+        >
+          ${escalaVisualActual}%
+        </span>
+      </div>
+
+      <div class="control-escala">
+        <button
+          class="btn btn-escala"
+          id="btnDisminuirEscala"
+          type="button"
+          aria-label="Disminuir tamaño"
+        >
+          A−
+        </button>
+
+        <input
+          class="form-range"
+          id="controlEscalaVisual"
+          type="range"
+          min="${ESCALA_MINIMA}"
+          max="${ESCALA_MAXIMA}"
+          step="${PASO_ESCALA}"
+          value="${escalaVisualActual}"
+          aria-label="Tamaño del contenido"
+          aria-valuetext="${escalaVisualActual} por ciento"
+        />
+
+        <button
+          class="btn btn-escala"
+          id="btnAumentarEscala"
+          type="button"
+          aria-label="Aumentar tamaño"
+        >
+          A+
+        </button>
+      </div>
+
+      <div class="marcas-escala" aria-hidden="true">
+        <span>100%</span>
+        <span>150%</span>
+        <span>200%</span>
+      </div>
+
+      <button
+        class="btn btn-restablecer-escala w-100"
+        id="btnRestablecerEscala"
+        type="button"
+      >
+        Restablecer tamaño
+      </button>
+    </div>
+  `;
+
+  const controlEscala = contenedor.querySelector(
+    "#controlEscalaVisual"
+  );
+
+  const valorEscala = contenedor.querySelector(
+    "#valorEscalaVisual"
+  );
+
+  const botonDisminuir = contenedor.querySelector(
+    "#btnDisminuirEscala"
+  );
+
+  const botonAumentar = contenedor.querySelector(
+    "#btnAumentarEscala"
+  );
+
+  const botonRestablecer = contenedor.querySelector(
+    "#btnRestablecerEscala"
+  );
+
+  function actualizarControl(valor) {
+    escalaVisualActual = guardarEscalaVisual(valor);
+
+    controlEscala.value = escalaVisualActual;
+
+    controlEscala.setAttribute(
+      "aria-valuetext",
+      `${escalaVisualActual} por ciento`
+    );
+
+    valorEscala.textContent =
+      `${escalaVisualActual}%`;
+
+    botonDisminuir.disabled =
+      escalaVisualActual <= ESCALA_MINIMA;
+
+    botonAumentar.disabled =
+      escalaVisualActual >= ESCALA_MAXIMA;
+  }
+
+  controlEscala.addEventListener(
+    "input",
+    () => {
+      actualizarControl(controlEscala.value);
+    }
+  );
+
+  botonDisminuir.addEventListener(
+    "click",
+    () => {
+      actualizarControl(
+        escalaVisualActual - PASO_ESCALA
+      );
+    }
+  );
+
+  botonAumentar.addEventListener(
+    "click",
+    () => {
+      actualizarControl(
+        escalaVisualActual + PASO_ESCALA
+      );
+    }
+  );
+
+  botonRestablecer.addEventListener(
+    "click",
+    () => {
+      actualizarControl(ESCALA_MINIMA);
+    }
+  );
+
+  actualizarControl(escalaVisualActual);
+
+  return contenedor;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const paginaActual = document.body.dataset.page;
 
-  document.querySelectorAll("[data-page]").forEach((enlace) => {
-    enlace.classList.toggle(
-      "active",
-      enlace.dataset.page === paginaActual
-    );
-  });
+  document.querySelectorAll("[data-page]").forEach(
+    (enlace) => {
+      enlace.classList.toggle(
+        "active",
+        enlace.dataset.page === paginaActual
+      );
+    }
+  );
 
   const enlaceCarrito = document.querySelector(
     'a[data-page="carrito"]'
   );
 
   const botonIngresar = document.querySelector(
-  "#btnLoginPlaceholder, #btnCerrarSesion"
-);
+    "#btnLoginPlaceholder, #btnCerrarSesion"
+  );
+  const nombreUsuarioNavbar = document.querySelector(
+    "#nombreUsuarioNavbar"
+  );
 
   if (enlaceCarrito && botonIngresar) {
-    const itemCarrito = enlaceCarrito.closest(".nav-item");
-    const contenedorNavegacion = botonIngresar.parentElement;
+    const itemCarrito =
+      enlaceCarrito.closest(".nav-item");
 
-    const contenedorAcciones = document.createElement("div");
+    const contenedorNavegacion =
+      botonIngresar.parentElement;
+
+    const contenedorAcciones =
+      document.createElement("div");
 
     contenedorAcciones.className =
       "d-flex align-items-center gap-3 mt-3 mt-lg-0";
@@ -64,10 +310,45 @@ document.addEventListener("DOMContentLoaded", () => {
       <span id="contadorCarrito">0</span>
     `;
 
+    contenedorAcciones.appendChild(
+      crearControlAccesibilidad()
+    );
+
     contenedorAcciones.appendChild(enlaceCarrito);
+
+    if (nombreUsuarioNavbar) {
+      nombreUsuarioNavbar.classList.remove(
+        "me-lg-3",
+        "mt-2",
+        "mt-lg-0"
+      );
+
+      contenedorAcciones.appendChild(
+        nombreUsuarioNavbar
+      );
+    }
+
     contenedorAcciones.appendChild(botonIngresar);
 
     itemCarrito?.remove();
+  } else {
+    const contenedorNavegacion =
+      document.querySelector(".navbar-collapse");
+
+    if (contenedorNavegacion) {
+      const controlAccesibilidad =
+        crearControlAccesibilidad();
+
+      controlAccesibilidad.classList.add(
+        "mt-3",
+        "mt-lg-0",
+        "ms-lg-auto"
+      );
+
+      contenedorNavegacion.appendChild(
+        controlAccesibilidad
+      );
+    }
   }
 
   function actualizarContadorCarrito() {
@@ -84,14 +365,17 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       carrito =
         JSON.parse(
-          localStorage.getItem("turingStoreCarrito")
+          localStorage.getItem(
+            "turingStoreCarrito"
+          )
         ) || [];
     } catch (error) {
       carrito = [];
     }
 
     const cantidadTotal = carrito.reduce(
-      (total, producto) => total + producto.cantidad,
+      (total, producto) =>
+        total + producto.cantidad,
       0
     );
 
@@ -103,8 +387,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   actualizarContadorCarrito();
 
-  const toastElement = document.querySelector("#appToast");
-  const toastMessage = document.querySelector("#toastMessage");
+  const toastElement =
+    document.querySelector("#appToast");
+
+  const toastMessage =
+    document.querySelector("#toastMessage");
 
   window.mostrarMensaje = (mensaje) => {
     if (!toastElement || !toastMessage) {
@@ -117,11 +404,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .getOrCreateInstance(toastElement)
       .show();
   };
-
 });
 
 function crearBotonWhatsApp() {
-  if (document.querySelector(".whatsapp-flotante")) {
+  if (
+    document.querySelector(
+      ".whatsapp-flotante"
+    )
+  ) {
     return;
   }
 
@@ -131,15 +421,19 @@ function crearBotonWhatsApp() {
     "Hola, quisiera realizar una consulta sobre Turing Store.";
 
   const idProducto =
-    new URLSearchParams(window.location.search).get("id");
+    new URLSearchParams(
+      window.location.search
+    ).get("id");
 
   if (
     idProducto &&
     typeof productos !== "undefined"
   ) {
-    const productoSeleccionado = productos.find(
-      (producto) => producto.id === idProducto
-    );
+    const productoSeleccionado =
+      productos.find(
+        (producto) =>
+          producto.id === idProducto
+      );
 
     if (productoSeleccionado) {
       mensaje =
@@ -183,6 +477,7 @@ function crearBotonWhatsApp() {
              9.5 9.5 0 0 1-4-.9L3 21l1.7-4.6
              A8.5 8.5 0 1 1 21 11.5Z"
         ></path>
+
         <path
           d="M8.5 8.5c.5 3 2 4.5 5 5"
         ></path>

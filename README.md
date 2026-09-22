@@ -10,6 +10,8 @@ Durante el Sprint 3 se integraron Firebase Authentication y Cloud Firestore para
 
 También se incorporó el inicio de sesión con Google y la posibilidad de personalizar la foto del perfil manteniendo el proyecto dentro del plan gratuito de Firebase.
 
+Como mejora de accesibilidad visual, se incorporó un control que permite aumentar o disminuir el tamaño del contenido entre 100 % y 200 %. La preferencia seleccionada se conserva al navegar entre las páginas.
+
 ## Público objetivo
 
 - Estudiantes.
@@ -84,7 +86,7 @@ turing_store/
 ## Organización de JavaScript
 
 - `js/config.js`: configuración e inicialización de Firebase.
-- `js/base.js`: navegación, contador del carrito, mensajes y funciones compartidas.
+- `js/base.js`: navegación, contador del carrito, mensajes, control de accesibilidad visual y funciones compartidas.
 - `js/sesion.js`: control de sesión y navegación según el usuario.
 - `js/login.js`: registro, inicio de sesión, acceso con Google y recuperación de contraseña.
 - `js/catalogo.js`: generación del catálogo, búsqueda, filtros y ordenamiento.
@@ -253,6 +255,21 @@ Los pedidos anteriores continúan siendo compatibles y muestran una versión cor
 - Consulta de pedidos.
 - Restricción del panel para usuarios que no poseen el rol `admin`.
 
+### Accesibilidad visual
+
+- Control de tamaño disponible desde la barra de navegación.
+- Botón identificado mediante `A±`.
+- Ajuste del contenido entre 100 % y 200 %.
+- Incrementos y reducciones de 25 %.
+- Botones para aumentar y disminuir el tamaño.
+- Control deslizante para seleccionar el nivel deseado.
+- Opción para restablecer el tamaño original.
+- Conservación de la preferencia mediante `LocalStorage`.
+- Aplicación automática del tamaño seleccionado al cambiar de página.
+- Integración en todas las páginas sin modificar individualmente cada archivo HTML.
+
+Esta funcionalidad está orientada principalmente a facilitar la navegación de personas con baja visión.
+
 ## Colecciones de Firestore
 
 ### `usuarios`
@@ -360,6 +377,9 @@ Las reglas deben publicarse desde Firebase Console para que tengan efecto.
 11. Probar la edición del nombre.
 12. Probar la carga y eliminación de la foto del perfil.
 13. Probar la recuperación de contraseña cerrando previamente la sesión.
+14. Abrir el control `A±` de la barra de navegación.
+15. Probar los diferentes tamaños entre 100 % y 200 %.
+16. Cambiar de página y comprobar que el tamaño seleccionado se conserva.
 
 ## Comprobaciones realizadas
 
@@ -390,6 +410,11 @@ Las reglas deben publicarse desde Firebase Console para que tengan efecto.
 - Los pagos guardan método, estado y referencia en Firestore.
 - No se almacenan datos sensibles de las tarjetas.
 - El stock se descuenta mediante una transacción de Firestore.
+- El control de accesibilidad aparece en todas las páginas.
+- El tamaño del contenido puede ajustarse entre 100 % y 200 %.
+- Los botones de aumento, disminución y restablecimiento funcionan correctamente.
+- La preferencia visual permanece guardada al cambiar de página o recargar el sitio.
+- La barra de navegación mantiene correctamente el orden de sus elementos.
 
 ## Decisiones de diseño
 
@@ -399,6 +424,8 @@ Las tarjetas utilizan bordes suaves, espacios amplios y sombras discretas. El lo
 
 El perfil del usuario utiliza una tarjeta destacada, colores suaves, sombras y pequeños movimientos al pasar el cursor. La sección **Mis compras** se presenta de forma separada para facilitar la lectura.
 
+El control de accesibilidad se mantuvo compacto dentro de la barra de navegación para evitar sobrecargar la interfaz. La reproducción automática de audio no fue incorporada, priorizando una experiencia sencilla y no invasiva.
+
 La lógica JavaScript se distribuyó en archivos separados para facilitar la lectura, el mantenimiento y la reutilización del código.
 
 Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías se redimensionan, comprimen y almacenan en el documento del usuario en Cloud Firestore, sin utilizar Firebase Storage.
@@ -406,7 +433,7 @@ Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías
 ## Próximas mejoras
 
 - Pruebas automatizadas.
-- Mejoras adicionales de accesibilidad.
+- Evaluación de compatibilidad con lectores de pantalla.
 - Seguimiento administrativo del estado de los pedidos.
 - Optimización adicional de imágenes.
 - Publicación de una versión estable del proyecto.
