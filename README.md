@@ -183,6 +183,15 @@ El cliente puede modificar su nombre, pero no puede cambiar su rol desde la inte
 - Registro del pedido únicamente si la transacción termina correctamente.
 - Vaciado del carrito después de una compra exitosa.
 - Mensajes de compra mostrados en el centro de la pantalla.
+- Simulación de pago mediante tarjeta de crédito o débito.
+- Validación de tarjetas incompletas o vencidas.
+- Simulación de transferencia bancaria.
+- Opción de efectivo al retirar.
+- Generación automática de una referencia de pago.
+- Registro del método y estado del pago en Firestore.
+- Pagos con tarjeta guardados como `aprobado`.
+- Transferencia y efectivo guardados como `pendiente`.
+- Protección de datos sensibles: no se almacenan número de tarjeta, vencimiento ni CVV.
 
 ### Pedidos
 
@@ -198,6 +207,9 @@ Cada pedido guarda información como:
 - Total.
 - Fecha.
 - Estado.
+- Forma de pago.
+- Estado del pago.
+- Referencia del pago.
 
 Los pedidos nuevos utilizan un número más legible con un formato similar a:
 
@@ -266,6 +278,10 @@ Campos principales:
 - `total`
 - `fecha`
 - `estado`
+- `pago.metodo`
+- `pago.nombreMetodo`
+- `pago.estado`
+- `pago.referencia`
 
 ### `valoraciones`
 
@@ -339,6 +355,11 @@ Las reglas deben publicarse desde Firebase Console para que tengan efecto.
 - El historial muestra solamente los pedidos del usuario autenticado.
 - Las valoraciones quedan asociadas al producto y al usuario.
 - Los usuarios sin rol administrativo no pueden acceder al panel de administración.
+- Las formas de pago con tarjeta, transferencia y efectivo funcionan correctamente.
+- Las tarjetas incompletas o vencidas son rechazadas.
+- Los pagos guardan método, estado y referencia en Firestore.
+- No se almacenan datos sensibles de las tarjetas.
+- El stock se descuenta mediante una transacción de Firestore.
 
 ## Decisiones de diseño
 
@@ -350,8 +371,8 @@ La lógica JavaScript se distribuyó en archivos separados para facilitar la lec
 
 ## Próximas mejoras
 
-- Simulación de formas de pago.
-- Pruebas completas de todas las funcionalidades.
-- Mejoras de accesibilidad.
-- Validaciones adicionales.
-- Preparación del Pull Request final hacia `main`.
+- Mejoras visual perfil de usuario.
+- Pruebas automatizadas.
+- Mejoras adicionales de accesibilidad.
+- Seguimiento administrativo del estado de los pedidos.
+- Publicación de una versión estable del proyecto.
