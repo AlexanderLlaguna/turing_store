@@ -110,21 +110,61 @@
         <section id="contenidoPerfil" class="d-none">
           <div class="row justify-content-center">
             <div class="col-lg-7">
-              <div class="card shadow-sm">
+              <div class="card perfil-card shadow-sm">
                 <div class="card-body p-5">
                   <!-- Encabezado del perfil -->
-                  <div class="text-center mb-4">
-                    <div class="display-4 mb-3">👤</div>
+                  <div class="text-center mb-4 perfil-encabezado">
+                    <div class="mb-4">
+                      <img
+                        id="fotoPerfil"
+                        class="rounded-circle border border-3 border-primary shadow-sm"
+                        width="140"
+                        height="140"
+                        alt="Foto de perfil"
+                        style="object-fit: cover"
+                      />
+                    </div>
+
+                    <div class="mb-4">
+                      <label
+                        for="inputFotoPerfil"
+                        class="form-label fw-semibold"
+                      >
+                        Foto de perfil
+                      </label>
+
+                      <input
+                        class="form-control"
+                        id="inputFotoPerfil"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                      />
+
+                      <div class="d-flex justify-content-center gap-2 mt-3">
+                        <button
+                          class="btn btn-primary"
+                          id="btnGuardarFoto"
+                          type="button"
+                          disabled
+                        >
+                          Guardar foto
+                        </button>
+
+                        <button
+                          class="btn btn-outline-danger"
+                          id="btnEliminarFoto"
+                          type="button"
+                        >
+                          Eliminar foto
+                        </button>
+                      </div>
+                    </div>
 
                     <span class="badge rounded-pill text-bg-warning mb-3">
                       Cuenta de usuario
                     </span>
 
                     <h1 class="h2">Mi perfil</h1>
-
-                    <p class="text-body-secondary">
-                      Información de tu cuenta en Turing Store
-                    </p>
                   </div>
 
                   <!-- Datos actuales del usuario -->
@@ -226,24 +266,25 @@
           </div>
 
           <!-- Historial de pedidos del cliente -->
-          <section class="mt-5" aria-labelledby="tituloPedidos">
-            <div
-              class="d-flex justify-content-between align-items-center gap-3 flex-wrap mb-3"
-            >
+          <section class="mt-5 compras-panel" aria-labelledby="tituloPedidos">
+            <div class="compras-encabezado">
               <div>
-                <span class="eyebrow"> Sprint 3 </span>
+                <h2 class="h3 mb-1" id="tituloPedidos">Mis compras</h2>
 
-                <h2 class="h3 mb-0" id="tituloPedidos">Mis pedidos</h2>
+                <p class="mb-0 opacity-75">
+                  Consulta los productos y pedidos realizados en Turing Store.
+                </p>
               </div>
 
-              <!-- Cantidad de pedidos encontrados -->
-              <span class="badge text-bg-primary" id="cantidadPedidos">
+              <span
+                class="badge rounded-pill text-bg-warning"
+                id="cantidadPedidos"
+              >
                 0 pedidos
               </span>
             </div>
 
-            <!-- Aquí perfil.js mostrará los pedidos -->
-            <div id="listaPedidos" aria-live="polite">
+            <div id="listaPedidos" class="compras-contenido" aria-live="polite">
               <div class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
                   <span class="visually-hidden"> Cargando pedidos… </span>

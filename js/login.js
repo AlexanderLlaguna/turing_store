@@ -5,10 +5,13 @@ import {
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
     updateProfile,
+    GoogleAuthProvider,
+    signInWithPopup,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 import {
     doc,
+    getDoc,
     setDoc,
     serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
@@ -21,6 +24,9 @@ const botonRecuperarClave =
 
 const formRegistro =
     document.querySelector("#formRegistro");
+
+const botonGoogle =
+    document.querySelector("#btnGoogle");
 
 function obtenerMensajeError(codigo) {
     const mensajes = {
@@ -46,7 +52,19 @@ function obtenerMensajeError(codigo) {
             "No fue posible conectarse con Firebase.",
 
         "auth/operation-not-allowed":
-            "El acceso con correo y contraseña no está habilitado.",
+            "Este método de acceso no está habilitado.",
+
+        "auth/popup-closed-by-user":
+            "Cerraste la ventana de Google antes de completar el acceso.",
+
+        "auth/popup-blocked":
+            "El navegador bloqueó la ventana de Google. Permití las ventanas emergentes.",
+
+        "auth/cancelled-popup-request":
+            "La solicitud de acceso con Google fue cancelada.",
+
+        "auth/account-exists-with-different-credential":
+            "Ya existe una cuenta con este correo utilizando otro método de acceso.",
     };
 
     return (
@@ -55,6 +73,7 @@ function obtenerMensajeError(codigo) {
     );
 }
 
+// Registrar usuario con correo y contraseña
 formRegistro?.addEventListener(
     "submit",
     async (evento) => {
@@ -84,7 +103,8 @@ formRegistro?.addEventListener(
 
         try {
             boton.disabled = true;
-            boton.textContent = "Creando cuenta...";
+            boton.textContent =
+                "Creando cuenta...";
 
             const credenciales =
                 await createUserWithEmailAndPassword(
@@ -110,11 +130,13 @@ formRegistro?.addEventListener(
                     nombre: nombre,
                     correo: correo,
                     rol: "cliente",
-                    fechaRegistro: serverTimestamp(),
+                    fechaRegistro:
+                        serverTimestamp(),
                 }
             );
 
-            window.location.href = "perfil.html";
+            window.location.href =
+                "perfil.html";
         } catch (error) {
             console.error(
                 "Error al registrar:",
@@ -124,15 +146,19 @@ formRegistro?.addEventListener(
             );
 
             window.mostrarMensaje(
-                obtenerMensajeError(error.code)
+                obtenerMensajeError(
+                    error.code
+                )
             );
 
             boton.disabled = false;
-            boton.textContent = "Registrarme";
+            boton.textContent =
+                "Registrarme";
         }
     }
 );
 
+// Iniciar sesión con correo y contraseña
 formIngreso?.addEventListener(
     "submit",
     async (evento) => {
@@ -156,7 +182,8 @@ formIngreso?.addEventListener(
 
         try {
             boton.disabled = true;
-            boton.textContent = "Ingresando...";
+            boton.textContent =
+                "Ingresando...";
 
             await signInWithEmailAndPassword(
                 auth,
@@ -164,7 +191,8 @@ formIngreso?.addEventListener(
                 clave
             );
 
-            window.location.href = "perfil.html";
+            window.location.href =
+                "perfil.html";
         } catch (error) {
             console.error(
                 "Error al iniciar sesión:",
@@ -174,37 +202,164 @@ formIngreso?.addEventListener(
             );
 
             window.mostrarMensaje(
-                obtenerMensajeError(error.code)
+                obtenerMensajeError(
+                    error.code
+                )
             );
 
             boton.disabled = false;
-            boton.textContent = "Ingresar";
+            boton.textContent =
+                "Ingresar";
         }
     }
 );
 
-//Recuperar la seña
-botonRecuperarClave?.addEventListener("click", async () => {
-    const correo = document
-        .querySelector("#correoIngreso")
-        .value
-        .trim();
+// Iniciar sesión con Google
+const proveedorGoogle =
+    new GoogleAuthProvider();
 
-    if (!correo) {
-        window.mostrarMensaje(
-            "Escribí tu correo electrónico para recuperar la contraseña."
-        );
-        return;
-    }
-
-    try {
-        await sendPasswordResetEmail(auth, correo);
-
-        window.mostrarMensaje(
-            "Te enviamos un correo para restablecer tu contraseña. Revisá también el spam."
-        );
-    } catch (error) {
-        console.error("Error al recuperar la contraseña:", error);
-        window.mostrarMensaje(obtenerMensajeError(error.code));
-    }
+proveedorGoogle.setCustomParameters({
+    prompt: "select_account",
 });
+
+botonGoogle?.addEventListener(
+    "click",
+    async () => {
+        const contenidoOriginal =
+            botonGoogle.innerHTML;
+
+        try {
+            botonGoogle.disabled = true;
+            botonGoogle.textContent =
+                "Conectando con Google...";
+
+            const credenciales =
+                await signInWithPopup(
+                    auth,
+                    proveedorGoogle
+                );
+
+            const usuario =
+                credenciales.user;
+
+            const referenciaUsuario =
+                doc(
+                    db,
+                    "usuarios",
+                    usuario.uid
+                );
+
+            const documentoUsuario =
+                await getDoc(
+                    referenciaUsuario
+                );
+
+            if (!documentoUsuario.exists()) {
+                await setDoc(
+                    referenciaUsuario,
+                    {
+                        nombre:
+                            usuario.displayName ||
+                            "Usuario",
+
+                        correo:
+                            usuario.email,
+
+                        fotoGoogle:
+                            usuario.photoURL ||
+                            "",
+
+                        rol:
+                            "cliente",
+
+                        fechaRegistro:
+                            serverTimestamp(),
+
+                        ultimoAcceso:
+                            serverTimestamp(),
+                    }
+                );
+            } else {
+                await setDoc(
+                    referenciaUsuario,
+                    {
+                        correo:
+                            usuario.email,
+
+                        fotoGoogle:
+                            usuario.photoURL ||
+                            "",
+
+                        ultimoAcceso:
+                            serverTimestamp(),
+                    },
+                    {
+                        merge: true,
+                    }
+                );
+            }
+
+            window.location.href =
+                "perfil.html";
+        } catch (error) {
+            console.error(
+                "Error al ingresar con Google:",
+                error.code,
+                error.message,
+                error
+            );
+
+            window.mostrarMensaje(
+                obtenerMensajeError(
+                    error.code
+                )
+            );
+
+            botonGoogle.disabled = false;
+            botonGoogle.innerHTML =
+                contenidoOriginal;
+        }
+    }
+);
+
+// Recuperar la contraseña
+botonRecuperarClave?.addEventListener(
+    "click",
+    async () => {
+        const correo =
+            document
+                .querySelector("#correoIngreso")
+                .value
+                .trim();
+
+        if (!correo) {
+            window.mostrarMensaje(
+                "Escribí tu correo electrónico para recuperar la contraseña."
+            );
+
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(
+                auth,
+                correo
+            );
+
+            window.mostrarMensaje(
+                "Te enviamos un correo para restablecer tu contraseña. Revisá también el spam."
+            );
+        } catch (error) {
+            console.error(
+                "Error al recuperar la contraseña:",
+                error
+            );
+
+            window.mostrarMensaje(
+                obtenerMensajeError(
+                    error.code
+                )
+            );
+        }
+    }
+);
