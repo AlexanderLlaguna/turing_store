@@ -1030,3 +1030,125 @@ body[data-page="perfil"] .list-group-item:hover {
   transform: translateY(-6px);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
 }
+/* ACCESIBILIDAD VISUAL */
+
+.control-accesibilidad {
+  position: relative;
+}
+
+.boton-accesibilidad {
+  min-width: 44px;
+  border-color: rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.boton-accesibilidad:hover,
+.boton-accesibilidad:focus {
+  color: var(--primary);
+  background-color: var(--white);
+  border-color: var(--white);
+}
+
+.panel-accesibilidad {
+  width: 310px;
+  max-width: calc(100vw - 2rem);
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+}
+
+.accesibilidad-encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.accesibilidad-encabezado strong {
+  display: block;
+  color: var(--primary);
+}
+
+.accesibilidad-encabezado small {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--muted);
+}
+
+.escala-actual {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.55rem;
+  color: var(--accent-dark);
+  background-color: #ccfbf1;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.control-escala {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.control-escala .form-range {
+  margin: 0;
+  accent-color: var(--accent-dark);
+}
+
+.btn-escala {
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  min-height: 42px;
+  padding: 0.35rem;
+  color: var(--accent-dark);
+  background-color: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.btn-escala:hover:not(:disabled) {
+  color: var(--white);
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.btn-escala:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.marcas-escala {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.35rem 3.15rem 1rem;
+  color: var(--muted);
+  font-size: 0.67rem;
+}
+
+.btn-restablecer-escala {
+  color: var(--primary);
+  background-color: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-restablecer-escala:hover {
+  color: var(--white);
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+@media (max-width: 576px) {
+  .panel-accesibilidad {
+    width: calc(100vw - 2rem);
+  }
+}
