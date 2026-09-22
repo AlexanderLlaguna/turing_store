@@ -17,57 +17,60 @@ import {
     where,
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-// Indicador de carga.
+// ELEMENTOS DEL PERFIL
+
 const cargandoPerfil =
     document.querySelector("#cargandoPerfil");
 
-// Contenido principal del perfil.
 const contenidoPerfil =
     document.querySelector("#contenidoPerfil");
 
-// Nombre mostrado en la tarjeta.
 const nombreUsuario =
     document.querySelector("#nombreUsuario");
 
-// Nombre mostrado en la barra de navegación.
 const nombreUsuarioNavbar =
     document.querySelector("#nombreUsuarioNavbar");
 
-// Correo electrónico mostrado en el perfil.
 const correoUsuario =
     document.querySelector("#correoUsuario");
 
-// Rol del usuario.
 const rolUsuario =
     document.querySelector("#rolUsuario");
 
-// Botón que muestra el formulario de edición.
 const botonEditarPerfil =
     document.querySelector("#btnEditarPerfil");
 
-// Formulario para modificar el nombre.
 const formEditarPerfil =
     document.querySelector("#formEditarPerfil");
 
-// Campo donde el usuario escribe su nuevo nombre.
 const campoNombrePerfil =
     document.querySelector("#nombrePerfil");
 
-// Botón para cancelar la edición.
 const botonCancelarEdicion =
     document.querySelector("#btnCancelarEdicion");
 
-// Botón para guardar los cambios.
 const botonGuardarPerfil =
     document.querySelector("#btnGuardarPerfil");
 
-// Contenedor donde se mostrarán los pedidos.
 const listaPedidos =
     document.querySelector("#listaPedidos");
 
-// Indicador de cantidad de pedidos.
 const cantidadPedidos =
     document.querySelector("#cantidadPedidos");
+
+// ELEMENTOS DE LA FOTO
+
+const imagenPerfil =
+    document.querySelector("#fotoPerfil");
+
+const inputFotoPerfil =
+    document.querySelector("#inputFotoPerfil");
+
+const botonGuardarFoto =
+    document.querySelector("#btnGuardarFoto");
+
+const botonEliminarFoto =
+    document.querySelector("#btnEliminarFoto");
 
 // BOTONES PARA CERRAR SESIÓN
 
@@ -76,15 +79,56 @@ const botonesCerrarSesion =
         "#btnCerrarSesion, #btnCerrarSesionPrincipal"
     );
 
-// Guardará el nombre actual del usuario.
+// IMAGEN PREDETERMINADA
+
+const FOTO_PREDETERMINADA =
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(`
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="320"
+            height="320"
+            viewBox="0 0 320 320"
+        >
+            <rect
+                width="320"
+                height="320"
+                fill="#e9ecef"
+            />
+
+            <circle
+                cx="160"
+                cy="120"
+                r="58"
+                fill="#6c757d"
+            />
+
+            <path
+                d="M55 300c10-74 49-111 105-111s95 37 105 111"
+                fill="#6c757d"
+            />
+        </svg>
+    `);
+
+// VARIABLES DEL PERFIL
+
 let nombreActual = "";
 
-// Formatea los precios utilizando el formato de Uruguay.
+let fotoGuardadaActual = "";
+
+let fotoAlternativaActual =
+    FOTO_PREDETERMINADA;
+
+let fotoPendiente = "";
+
+// FORMATEAR PRECIOS
+
 function formatearPrecio(valor) {
     return `$ ${Number(valor).toLocaleString("es-UY")}`;
 }
 
-// Evita que se inserte código HTML desde Firestore.
+// EVITAR CÓDIGO HTML DESDE FIRESTORE
+
 function escaparHTML(texto) {
     const elemento =
         document.createElement("div");
@@ -95,23 +139,21 @@ function escaparHTML(texto) {
     return elemento.innerHTML;
 }
 
+// ACTUALIZAR NOMBRE EN LA BARRA
 
-// Actualiza el saludo de la barra de navegación.
 function actualizarNombreNavbar(nombreCompleto) {
     const nombre =
         nombreCompleto || "Usuario";
 
-    // Mostramos solamente el primer nombre.
     nombreUsuarioNavbar.textContent =
         `Hola, ${nombre.trim().split(/\s+/)[0]}`;
 
-    // Mostramos el nombre completo al pasar el mouse.
     nombreUsuarioNavbar.title =
         `Sesión iniciada como ${nombre}`;
 }
 
+// MOSTRAR NOMBRE DEL USUARIO
 
-// Actualiza visualmente el nombre en toda la página.
 function mostrarNombreUsuario(nombre) {
     nombreActual =
         nombre || "Usuario";
@@ -127,9 +169,384 @@ function mostrarNombreUsuario(nombre) {
         nombreActual;
 }
 
+// MOSTRAR FOTO DEL USUARIO
 
-// Oculta el formulario y vuelve a mostrar
-// el botón "Editar perfil".
+function mostrarFotoPerfil(foto) {
+    imagenPerfil.src =
+        foto || FOTO_PREDETERMINADA;
+}
+
+// ACTUALIZAR BOTONES DE LA FOTO
+
+function actualizarBotonesFoto() {
+    botonGuardarFoto.disabled =
+        !fotoPendiente;
+
+    botonEliminarFoto.disabled =
+        !fotoGuardadaActual &&
+        !fotoPendiente;
+}
+
+// COMPRIMIR Y RECORTAR LA IMAGEN
+
+function procesarImagen(archivo) {
+    return new Promise(
+        (resolve, reject) => {
+            const formatosPermitidos = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+            ];
+
+            if (
+                !formatosPermitidos.includes(
+                    archivo.type
+                )
+            ) {
+                reject(
+                    new Error(
+                        "Selecciona una imagen JPG, PNG o WebP."
+                    )
+                );
+
+                return;
+            }
+
+            const limite =
+                5 * 1024 * 1024;
+
+            if (archivo.size > limite) {
+                reject(
+                    new Error(
+                        "La imagen no puede superar los 5 MB."
+                    )
+                );
+
+                return;
+            }
+
+            const lector =
+                new FileReader();
+
+            lector.onload = () => {
+                const imagen =
+                    new Image();
+
+                imagen.onload = () => {
+                    const canvas =
+                        document.createElement(
+                            "canvas"
+                        );
+
+                    const contexto =
+                        canvas.getContext("2d");
+
+                    const medida = 320;
+
+                    canvas.width =
+                        medida;
+
+                    canvas.height =
+                        medida;
+
+                    const lado =
+                        Math.min(
+                            imagen.width,
+                            imagen.height
+                        );
+
+                    const origenX =
+                        (imagen.width - lado) / 2;
+
+                    const origenY =
+                        (imagen.height - lado) / 2;
+
+                    contexto.drawImage(
+                        imagen,
+                        origenX,
+                        origenY,
+                        lado,
+                        lado,
+                        0,
+                        0,
+                        medida,
+                        medida
+                    );
+
+                    const imagenComprimida =
+                        canvas.toDataURL(
+                            "image/jpeg",
+                            0.78
+                        );
+
+                    if (
+                        imagenComprimida.length >
+                        700000
+                    ) {
+                        reject(
+                            new Error(
+                                "La imagen resultante continúa siendo demasiado grande."
+                            )
+                        );
+
+                        return;
+                    }
+
+                    resolve(
+                        imagenComprimida
+                    );
+                };
+
+                imagen.onerror = () => {
+                    reject(
+                        new Error(
+                            "No fue posible leer la imagen."
+                        )
+                    );
+                };
+
+                imagen.src =
+                    lector.result;
+            };
+
+            lector.onerror = () => {
+                reject(
+                    new Error(
+                        "No fue posible abrir el archivo."
+                    )
+                );
+            };
+
+            lector.readAsDataURL(
+                archivo
+            );
+        }
+    );
+}
+
+// SELECCIONAR Y PREVISUALIZAR UNA FOTO
+
+inputFotoPerfil.addEventListener(
+    "change",
+    async () => {
+        const archivo =
+            inputFotoPerfil.files[0];
+
+        fotoPendiente = "";
+
+        actualizarBotonesFoto();
+
+        if (!archivo) {
+            mostrarFotoPerfil(
+                fotoGuardadaActual ||
+                fotoAlternativaActual
+            );
+
+            return;
+        }
+
+        try {
+            fotoPendiente =
+                await procesarImagen(
+                    archivo
+                );
+
+            mostrarFotoPerfil(
+                fotoPendiente
+            );
+
+            actualizarBotonesFoto();
+        } catch (error) {
+            console.error(
+                "Error al procesar la imagen:",
+                error
+            );
+
+            inputFotoPerfil.value =
+                "";
+
+            mostrarFotoPerfil(
+                fotoGuardadaActual ||
+                fotoAlternativaActual
+            );
+
+            window.mostrarMensaje?.(
+                error.message
+            );
+        }
+    }
+);
+
+// GUARDAR LA FOTO EN FIRESTORE
+
+botonGuardarFoto.addEventListener(
+    "click",
+    async () => {
+        const usuario =
+            auth.currentUser;
+
+        if (!usuario) {
+            window.mostrarMensaje?.(
+                "La sesión finalizó. Debes ingresar nuevamente."
+            );
+
+            return;
+        }
+
+        if (!fotoPendiente) {
+            window.mostrarMensaje?.(
+                "Selecciona una foto antes de guardarla."
+            );
+
+            return;
+        }
+
+        const textoOriginal =
+            botonGuardarFoto.textContent;
+
+        botonGuardarFoto.disabled =
+            true;
+
+        botonGuardarFoto.textContent =
+            "Guardando...";
+
+        try {
+            await setDoc(
+                doc(
+                    db,
+                    "usuarios",
+                    usuario.uid
+                ),
+                {
+                    fotoPerfil:
+                        fotoPendiente,
+
+                    actualizadoEn:
+                        serverTimestamp(),
+                },
+                {
+                    merge: true,
+                }
+            );
+
+            fotoGuardadaActual =
+                fotoPendiente;
+
+            fotoPendiente =
+                "";
+
+            inputFotoPerfil.value =
+                "";
+
+            mostrarFotoPerfil(
+                fotoGuardadaActual
+            );
+
+            actualizarBotonesFoto();
+
+            window.mostrarMensaje?.(
+                "La foto de perfil fue actualizada correctamente."
+            );
+        } catch (error) {
+            console.error(
+                "Error al guardar la foto:",
+                error
+            );
+
+            window.mostrarMensaje?.(
+                "No fue posible guardar la foto de perfil."
+            );
+        } finally {
+            botonGuardarFoto.disabled =
+                !fotoPendiente;
+
+            botonGuardarFoto.textContent =
+                textoOriginal;
+        }
+    }
+);
+
+// ELIMINAR LA FOTO PERSONALIZADA
+
+botonEliminarFoto.addEventListener(
+    "click",
+    async () => {
+        const usuario =
+            auth.currentUser;
+
+        if (!usuario) {
+            window.mostrarMensaje?.(
+                "La sesión finalizó. Debes ingresar nuevamente."
+            );
+
+            return;
+        }
+
+        const textoOriginal =
+            botonEliminarFoto.textContent;
+
+        botonEliminarFoto.disabled =
+            true;
+
+        botonEliminarFoto.textContent =
+            "Eliminando...";
+
+        try {
+            await setDoc(
+                doc(
+                    db,
+                    "usuarios",
+                    usuario.uid
+                ),
+                {
+                    fotoPerfil: "",
+
+                    actualizadoEn:
+                        serverTimestamp(),
+                },
+                {
+                    merge: true,
+                }
+            );
+
+            fotoGuardadaActual =
+                "";
+
+            fotoPendiente =
+                "";
+
+            inputFotoPerfil.value =
+                "";
+
+            mostrarFotoPerfil(
+                fotoAlternativaActual
+            );
+
+            actualizarBotonesFoto();
+
+            window.mostrarMensaje?.(
+                "La foto personalizada fue eliminada."
+            );
+        } catch (error) {
+            console.error(
+                "Error al eliminar la foto:",
+                error
+            );
+
+            window.mostrarMensaje?.(
+                "No fue posible eliminar la foto de perfil."
+            );
+        } finally {
+            botonEliminarFoto.textContent =
+                textoOriginal;
+
+            actualizarBotonesFoto();
+        }
+    }
+);
+
+// OCULTAR EL FORMULARIO DE EDICIÓN
+
 function ocultarFormularioEdicion() {
     formEditarPerfil.classList.add(
         "d-none"
@@ -140,50 +557,52 @@ function ocultarFormularioEdicion() {
     );
 }
 
-// CARGAR LOS PEDIDOS DEL CLIENTE
+// CARGAR PEDIDOS DEL CLIENTE
 
 async function cargarPedidos(usuarioId) {
     try {
-        // Buscamos únicamente los pedidos
-        // pertenecientes al usuario autenticado.
         const consulta = query(
             collection(db, "pedidos"),
-            where("usuarioId", "==", usuarioId)
+            where(
+                "usuarioId",
+                "==",
+                usuarioId
+            )
         );
 
         const respuesta =
             await getDocs(consulta);
 
-        // Convertimos los documentos en objetos
-        // y los ordenamos del más reciente al más antiguo.
-        const pedidos = respuesta.docs
-            .map(
-                (documento) => ({
-                    id: documento.id,
-                    ...documento.data(),
-                })
-            )
-            .sort(
-                (a, b) => {
-                    const fechaA =
-                        a.fecha?.toMillis?.() || 0;
+        const pedidos =
+            respuesta.docs
+                .map(
+                    (documento) => ({
+                        id: documento.id,
+                        ...documento.data(),
+                    })
+                )
+                .sort(
+                    (a, b) => {
+                        const fechaA =
+                            a.fecha
+                                ?.toMillis?.() ||
+                            0;
 
-                    const fechaB =
-                        b.fecha?.toMillis?.() || 0;
+                        const fechaB =
+                            b.fecha
+                                ?.toMillis?.() ||
+                            0;
 
-                    return fechaB - fechaA;
-                }
-            );
+                        return fechaB - fechaA;
+                    }
+                );
 
-        // Actualizamos la cantidad de pedidos.
         cantidadPedidos.textContent =
             `${pedidos.length} ${pedidos.length === 1
                 ? "pedido"
                 : "pedidos"
             }`;
 
-        // Mensaje cuando el cliente todavía
-        // no realizó ninguna compra.
         if (!pedidos.length) {
             listaPedidos.innerHTML = `
                 <div class="alert alert-info">
@@ -194,7 +613,6 @@ async function cargarPedidos(usuarioId) {
             return;
         }
 
-        // Generamos una tarjeta para cada pedido.
         listaPedidos.innerHTML =
             pedidos
                 .map(
@@ -202,15 +620,14 @@ async function cargarPedidos(usuarioId) {
                         const fecha =
                             pedido.fecha
                                 ?.toDate?.()
-                                .toLocaleString("es-UY")
-                            || "Fecha pendiente";
+                                .toLocaleString(
+                                    "es-UY"
+                                ) ||
+                            "Fecha pendiente";
 
-                        // Los pedidos nuevos tienen numeroPedido.
-                        // Para los anteriores usamos una versión
-                        // corta del identificador de Firestore.
                         const numeroVisible =
-                            pedido.numeroPedido
-                            || `TS-${pedido.id
+                            pedido.numeroPedido ||
+                            `TS-${pedido.id
                                 .slice(0, 6)
                                 .toUpperCase()}`;
 
@@ -243,8 +660,8 @@ async function cargarPedidos(usuarioId) {
                                             class="badge text-bg-success text-capitalize"
                                         >
                                             ${escaparHTML(
-                            pedido.estado
-                            || "confirmado"
+                            pedido.estado ||
+                            "confirmado"
                         )}
                                         </span>
                                     </div>
@@ -313,8 +730,6 @@ async function cargarPedidos(usuarioId) {
 onAuthStateChanged(
     auth,
     async (usuario) => {
-        // Si no existe una sesión activa,
-        // redirigimos al inicio de sesión.
         if (!usuario) {
             window.location.href =
                 "login.html";
@@ -322,20 +737,25 @@ onAuthStateChanged(
             return;
         }
 
-        // Primero mostramos los datos disponibles
-        // en Firebase Authentication.
         mostrarNombreUsuario(
-            usuario.displayName
-            || usuario.email?.split("@")[0]
-            || "Usuario"
+            usuario.displayName ||
+            usuario.email?.split("@")[0] ||
+            "Usuario"
         );
 
         correoUsuario.textContent =
-            usuario.email
-            || "Correo no disponible";
+            usuario.email ||
+            "Correo no disponible";
+
+        fotoAlternativaActual =
+            usuario.photoURL ||
+            FOTO_PREDETERMINADA;
+
+        mostrarFotoPerfil(
+            fotoAlternativaActual
+        );
 
         try {
-            // Referencia al documento personal del usuario.
             const referenciaUsuario =
                 doc(
                     db,
@@ -343,7 +763,6 @@ onAuthStateChanged(
                     usuario.uid
                 );
 
-            // Consultamos los datos guardados en Firestore.
             const documentoUsuario =
                 await getDoc(
                     referenciaUsuario
@@ -353,27 +772,36 @@ onAuthStateChanged(
                 const datosUsuario =
                     documentoUsuario.data();
 
-                // Mostramos el nombre guardado en Firestore.
                 mostrarNombreUsuario(
-                    datosUsuario.nombre
-                    || usuario.displayName
-                    || usuario.email?.split("@")[0]
-                    || "Usuario"
+                    datosUsuario.nombre ||
+                    usuario.displayName ||
+                    usuario.email?.split("@")[0] ||
+                    "Usuario"
                 );
 
-                // Mostramos el correo.
                 correoUsuario.textContent =
-                    datosUsuario.correo
-                    || usuario.email
-                    || "Correo no disponible";
+                    datosUsuario.correo ||
+                    usuario.email ||
+                    "Correo no disponible";
 
-                // Mostramos el rol.
                 rolUsuario.textContent =
-                    datosUsuario.rol
-                    || "cliente";
+                    datosUsuario.rol ||
+                    "cliente";
+
+                fotoGuardadaActual =
+                    datosUsuario.fotoPerfil ||
+                    "";
+
+                fotoAlternativaActual =
+                    datosUsuario.fotoGoogle ||
+                    usuario.photoURL ||
+                    FOTO_PREDETERMINADA;
+
+                mostrarFotoPerfil(
+                    fotoGuardadaActual ||
+                    fotoAlternativaActual
+                );
             } else {
-                // Si no existe el documento,
-                // utilizamos cliente como rol predeterminado.
                 rolUsuario.textContent =
                     "cliente";
             }
@@ -387,76 +815,64 @@ onAuthStateChanged(
                 "No disponible";
         }
 
-        // Ocultamos el indicador de carga.
+        actualizarBotonesFoto();
+
         cargandoPerfil.classList.add(
             "d-none"
         );
 
-        // Mostramos el contenido del perfil.
         contenidoPerfil.classList.remove(
             "d-none"
         );
 
-        // Cargamos el historial de pedidos.
         await cargarPedidos(
             usuario.uid
         );
     }
 );
 
-
-// MOSTRAR EL FORMULARIO DE EDICIÓN
+// MOSTRAR FORMULARIO DE EDICIÓN
 
 botonEditarPerfil.addEventListener(
     "click",
     () => {
-        // Colocamos el nombre actual dentro del campo.
         campoNombrePerfil.value =
             nombreActual;
 
-        // Ocultamos el botón de editar.
         botonEditarPerfil.classList.add(
             "d-none"
         );
 
-        // Mostramos el formulario.
         formEditarPerfil.classList.remove(
             "d-none"
         );
 
-        // Colocamos el cursor en el campo.
         campoNombrePerfil.focus();
     }
 );
 
-
-// CANCELAR LA EDICIÓN
+// CANCELAR EDICIÓN
 
 botonCancelarEdicion.addEventListener(
     "click",
     () => {
-        // Restauramos el nombre anterior.
         campoNombrePerfil.value =
             nombreActual;
 
-        // Ocultamos el formulario.
         ocultarFormularioEdicion();
     }
 );
 
-
-// GUARDAR LOS CAMBIOS DEL PERFIL
+// GUARDAR CAMBIOS DEL NOMBRE
 
 formEditarPerfil.addEventListener(
     "submit",
     async (evento) => {
-        // Evitamos que la página se recargue.
         evento.preventDefault();
 
         const usuario =
             auth.currentUser;
 
-        // Comprobamos que continúe autenticado.
         if (!usuario) {
             window.mostrarMensaje?.(
                 "La sesión finalizó. Debes ingresar nuevamente."
@@ -465,11 +881,9 @@ formEditarPerfil.addEventListener(
             return;
         }
 
-        // Eliminamos espacios innecesarios.
         const nuevoNombre =
             campoNombrePerfil.value.trim();
 
-        // Validación del nombre.
         if (nuevoNombre.length < 2) {
             window.mostrarMensaje?.(
                 "El nombre debe tener al menos 2 caracteres."
@@ -480,11 +894,9 @@ formEditarPerfil.addEventListener(
             return;
         }
 
-        // Guardamos el texto original del botón.
         const textoOriginal =
             botonGuardarPerfil.textContent;
 
-        // Desactivamos el botón mientras se guarda.
         botonGuardarPerfil.disabled =
             true;
 
@@ -492,12 +904,11 @@ formEditarPerfil.addEventListener(
             "Guardando...";
 
         try {
-            // Actualizamos el nombre visible
-            // en Firebase Authentication.
             await updateProfile(
                 usuario,
                 {
-                    displayName: nuevoNombre,
+                    displayName:
+                        nuevoNombre,
                 }
             );
 
@@ -508,7 +919,9 @@ formEditarPerfil.addEventListener(
                     usuario.uid
                 ),
                 {
-                    nombre: nuevoNombre,
+                    nombre:
+                        nuevoNombre,
+
                     actualizadoEn:
                         serverTimestamp(),
                 },
@@ -517,15 +930,12 @@ formEditarPerfil.addEventListener(
                 }
             );
 
-            // Actualizamos la interfaz sin recargar.
             mostrarNombreUsuario(
                 nuevoNombre
             );
 
-            // Ocultamos nuevamente el formulario.
             ocultarFormularioEdicion();
 
-            // Mostramos la confirmación.
             window.mostrarMensaje?.(
                 "El perfil fue actualizado correctamente."
             );
@@ -539,7 +949,6 @@ formEditarPerfil.addEventListener(
                 "No fue posible actualizar el perfil."
             );
         } finally {
-            // Reactivamos el botón.
             botonGuardarPerfil.disabled =
                 false;
 
@@ -569,9 +978,6 @@ async function cerrarSesion() {
     }
 }
 
-
-// Aplicamos la misma función a los dos
-// botones disponibles para cerrar sesión.
 botonesCerrarSesion.forEach(
     (boton) => {
         boton.addEventListener(

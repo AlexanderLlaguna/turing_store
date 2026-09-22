@@ -8,6 +8,8 @@ Turing Store es una tienda de accesorios tecnológicos para estudiar, trabajar y
 
 Durante el Sprint 3 se integraron Firebase Authentication y Cloud Firestore para implementar autenticación, perfiles de usuario, roles, productos, control de stock, pedidos, historial de compras y valoraciones.
 
+También se incorporó el inicio de sesión con Google y la posibilidad de personalizar la foto del perfil manteniendo el proyecto dentro del plan gratuito de Firebase.
+
 ## Público objetivo
 
 - Estudiantes.
@@ -32,6 +34,7 @@ Durante el Sprint 3 se integraron Firebase Authentication y Cloud Firestore para
 - LocalStorage.
 - Firebase Authentication.
 - Cloud Firestore.
+- Canvas API para procesar imágenes.
 - Git y GitHub.
 
 ## Estructura del proyecto
@@ -74,8 +77,8 @@ turing_store/
 - `pages/catalogo.html`: catálogo dinámico, búsqueda, filtros y ordenamiento.
 - `pages/producto.html`: detalle del producto seleccionado.
 - `pages/carrito.html`: administración y confirmación del carrito.
-- `pages/login.html`: registro, inicio de sesión y recuperación de contraseña.
-- `pages/perfil.html`: información del cliente, edición del nombre e historial de pedidos.
+- `pages/login.html`: registro, inicio de sesión, acceso con Google y recuperación de contraseña.
+- `pages/perfil.html`: información del cliente, foto de perfil, edición del nombre e historial de compras.
 - `pages/admin.html`: gestión administrativa de productos y pedidos.
 
 ## Organización de JavaScript
@@ -83,12 +86,12 @@ turing_store/
 - `js/config.js`: configuración e inicialización de Firebase.
 - `js/base.js`: navegación, contador del carrito, mensajes y funciones compartidas.
 - `js/sesion.js`: control de sesión y navegación según el usuario.
-- `js/login.js`: registro, inicio de sesión y recuperación de contraseña.
+- `js/login.js`: registro, inicio de sesión, acceso con Google y recuperación de contraseña.
 - `js/catalogo.js`: generación del catálogo, búsqueda, filtros y ordenamiento.
 - `js/producto.js`: detalle del producto seleccionado mediante su identificador.
 - `js/productos-firestore.js`: consulta y carga inicial de productos en Firestore.
 - `js/carrito.js`: carrito, cantidades, compra, pedido y actualización de stock.
-- `js/perfil.js`: perfil, edición del nombre e historial de pedidos.
+- `js/perfil.js`: perfil, foto personalizada, edición del nombre e historial de compras.
 - `js/valoraciones.js`: puntuaciones y comentarios asociados a productos.
 - `js/admin.js`: funciones protegidas para usuarios administradores.
 
@@ -144,6 +147,9 @@ Esto permite conservar los productos y sus cantidades aunque la página se recar
 
 - Registro de usuarios mediante Firebase Authentication.
 - Inicio de sesión con correo electrónico y contraseña.
+- Inicio de sesión mediante una cuenta de Google.
+- Creación automática del perfil en Firestore cuando el usuario ingresa con Google por primera vez.
+- Actualización de la fecha del último acceso.
 - Cierre de sesión.
 - Protección de las páginas privadas.
 - Identificación del usuario activo en la barra de navegación.
@@ -159,10 +165,20 @@ Esto permite conservar los productos y sus cantidades aunque la página se recar
 - Actualización del nombre en Firebase Authentication.
 - Actualización del nombre en Cloud Firestore.
 - Actualización inmediata del saludo de la barra de navegación.
-- Historial de pedidos correspondiente al usuario autenticado.
-- Cantidad total de pedidos realizados.
+- Historial de compras correspondiente al usuario autenticado.
+- Cantidad total de compras realizadas.
+- Carga de una foto personalizada de perfil.
+- Validación de imágenes JPG, PNG y WebP.
+- Validación del tamaño máximo permitido para la imagen.
+- Redimensionamiento y compresión de la imagen antes de guardarla.
+- Almacenamiento de la foto personalizada en Cloud Firestore.
+- Uso de la foto de Google cuando no existe una imagen personalizada.
+- Uso de un avatar predeterminado cuando el usuario no tiene fotografía.
+- Opción para eliminar la foto personalizada.
+- Sección visual de **Mis compras**.
+- Mejoras visuales mediante sombras, bordes, colores y animaciones suaves.
 
-El cliente puede modificar su nombre, pero no puede cambiar su rol desde la interfaz.
+El cliente puede modificar su nombre y su fotografía, pero no puede cambiar su rol desde la interfaz.
 
 ### Catálogo en Firestore
 
@@ -241,13 +257,17 @@ Los pedidos anteriores continúan siendo compatibles y muestran una versión cor
 
 ### `usuarios`
 
-Almacena los perfiles y roles.
+Almacena los perfiles, roles y fotografías de los usuarios.
 
 Campos principales:
 
 - `nombre`
 - `correo`
 - `rol`
+- `fotoPerfil`
+- `fotoGoogle`
+- `fechaRegistro`
+- `ultimoAcceso`
 - `actualizadoEn`
 
 ### `productos`
@@ -313,35 +333,45 @@ Las reglas deben publicarse desde Firebase Console para que tengan efecto.
 
 1. Crear un proyecto en Firebase.
 2. Activar Firebase Authentication con correo electrónico y contraseña.
-3. Crear una base de datos de Cloud Firestore.
-4. Configurar los datos del proyecto en `js/config.js`.
-5. Publicar el contenido de `firestore.rules`.
-6. Registrar una cuenta desde Turing Store.
-7. Cambiar manualmente el campo `rol` a `admin` en `usuarios/{uid}` para establecer el primer administrador.
-8. Ingresar nuevamente con la cuenta administradora.
-9. Abrir `pages/admin.html`.
-10. Presionar **Cargar productos iniciales** una sola vez.
+3. Activar el proveedor de acceso con Google.
+4. Seleccionar el nombre público y el correo de asistencia del proyecto.
+5. Autorizar los dominios `localhost` y `127.0.0.1`.
+6. Crear una base de datos de Cloud Firestore.
+7. Configurar los datos del proyecto en `js/config.js`.
+8. Publicar el contenido de `firestore.rules`.
+9. Registrar una cuenta o ingresar mediante Google.
+10. Cambiar manualmente el campo `rol` a `admin` en `usuarios/{uid}` para establecer el primer administrador.
+11. Ingresar nuevamente con la cuenta administradora.
+12. Abrir `pages/admin.html`.
+13. Presionar **Cargar productos iniciales** una sola vez.
 
 ## Ejecución local
 
 1. Abrir la carpeta del proyecto en Visual Studio Code.
 2. Ejecutar `index.html` mediante la extensión Live Server.
-3. Registrar una cuenta o iniciar sesión.
+3. Registrar una cuenta, iniciar sesión o acceder mediante Google.
 4. Acceder al catálogo.
 5. Probar la búsqueda, los filtros y el ordenamiento.
 6. Abrir el detalle de un producto desde el catálogo.
 7. Agregar productos al carrito.
 8. Modificar las cantidades.
 9. Confirmar la compra.
-10. Consultar el pedido dentro de **Mi perfil**.
+10. Consultar la compra dentro de **Mi perfil**.
 11. Probar la edición del nombre.
-12. Probar la recuperación de contraseña cerrando previamente la sesión.
+12. Probar la carga y eliminación de la foto del perfil.
+13. Probar la recuperación de contraseña cerrando previamente la sesión.
 
 ## Comprobaciones realizadas
 
 - El registro y el inicio de sesión funcionan.
+- El inicio de sesión con Google funciona correctamente.
+- Los usuarios nuevos de Google se registran en Firestore.
 - La recuperación de contraseña envía el correo correspondiente.
 - El perfil muestra los datos del usuario autenticado.
+- La foto de Google se muestra como imagen inicial del perfil.
+- El usuario puede cargar, guardar y eliminar una foto personalizada.
+- La foto personalizada permanece después de recargar la página.
+- Al eliminar la foto personalizada se recupera la imagen de Google o el avatar predeterminado.
 - El nombre del cliente puede editarse y permanece actualizado al recargar.
 - El catálogo consulta los productos desde Firestore.
 - La búsqueda, los filtros y el ordenamiento funcionan.
@@ -352,7 +382,7 @@ Las reglas deben publicarse desde Firebase Console para que tengan efecto.
 - El carrito permanece guardado al recargar.
 - La compra genera un pedido.
 - El stock se actualiza después de la compra.
-- El historial muestra solamente los pedidos del usuario autenticado.
+- El historial muestra solamente las compras del usuario autenticado.
 - Las valoraciones quedan asociadas al producto y al usuario.
 - Los usuarios sin rol administrativo no pueden acceder al panel de administración.
 - Las formas de pago con tarjeta, transferencia y efectivo funcionan correctamente.
@@ -367,12 +397,16 @@ Se mantuvo una estética minimalista basada en azul noche, blanco, gris claro y 
 
 Las tarjetas utilizan bordes suaves, espacios amplios y sombras discretas. El logotipo combina la letra `T`, como referencia a Alan Turing, con nodos inspirados en circuitos electrónicos.
 
+El perfil del usuario utiliza una tarjeta destacada, colores suaves, sombras y pequeños movimientos al pasar el cursor. La sección **Mis compras** se presenta de forma separada para facilitar la lectura.
+
 La lógica JavaScript se distribuyó en archivos separados para facilitar la lectura, el mantenimiento y la reutilización del código.
+
+Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías se redimensionan, comprimen y almacenan en el documento del usuario en Cloud Firestore, sin utilizar Firebase Storage.
 
 ## Próximas mejoras
 
-- Mejoras visual perfil de usuario.
 - Pruebas automatizadas.
 - Mejoras adicionales de accesibilidad.
 - Seguimiento administrativo del estado de los pedidos.
+- Optimización adicional de imágenes.
 - Publicación de una versión estable del proyecto.
