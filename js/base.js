@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   const botonIngresar = document.querySelector(
-    "#btnLoginPlaceholder"
-  );
+  "#btnLoginPlaceholder, #btnCerrarSesion"
+);
 
   if (enlaceCarrito && botonIngresar) {
     const itemCarrito = enlaceCarrito.closest(".nav-item");

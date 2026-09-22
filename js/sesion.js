@@ -48,10 +48,51 @@ function mostrarElemento(enlace, mostrar) {
     }
 }
 
+function ocultarNombreUsuario() {
+    document
+        .querySelector("#nombreUsuarioNavbar")
+        ?.remove();
+}
+
+function mostrarNombreUsuario(nombreCompleto) {
+    if (!botonSesion || !nombreCompleto) {
+        return;
+    }
+
+    const primerNombre =
+        nombreCompleto.trim().split(/\s+/)[0];
+
+    let nombreUsuario =
+        document.querySelector(
+            "#nombreUsuarioNavbar"
+        );
+
+    if (!nombreUsuario) {
+        nombreUsuario =
+            document.createElement("span");
+
+        nombreUsuario.id =
+            "nombreUsuarioNavbar";
+
+        nombreUsuario.className =
+            "navbar-text text-white fw-semibold me-lg-3 mt-2 mt-lg-0";
+
+        botonSesion.before(nombreUsuario);
+    }
+
+    nombreUsuario.textContent =
+        `Hola, ${primerNombre}`;
+
+    nombreUsuario.title =
+        `Sesión iniciada como ${nombreCompleto}`;
+}
+
 onAuthStateChanged(
     auth,
     async (usuario) => {
         if (!usuario) {
+            ocultarNombreUsuario();
+
             mostrarElemento(enlacePerfil, false);
             mostrarElemento(
                 enlaceAdministracion,
@@ -77,6 +118,11 @@ onAuthStateChanged(
             false
         );
 
+        let nombreParaMostrar =
+            usuario.displayName ||
+            usuario.email?.split("@")[0] ||
+            "Usuario";
+
         try {
             const referencia =
                 doc(
@@ -88,14 +134,22 @@ onAuthStateChanged(
             const documento =
                 await getDoc(referencia);
 
-            if (
-                documento.exists() &&
-                documento.data().rol === "admin"
-            ) {
-                mostrarElemento(
-                    enlaceAdministracion,
-                    true
-                );
+            if (documento.exists()) {
+                const datosUsuario =
+                    documento.data();
+
+                nombreParaMostrar =
+                    datosUsuario.nombre ||
+                    nombreParaMostrar;
+
+                if (
+                    datosUsuario.rol === "admin"
+                ) {
+                    mostrarElemento(
+                        enlaceAdministracion,
+                        true
+                    );
+                }
             }
         } catch (error) {
             console.error(
@@ -103,6 +157,10 @@ onAuthStateChanged(
                 error
             );
         }
+
+        mostrarNombreUsuario(
+            nombreParaMostrar
+        );
 
         if (botonSesion) {
             botonSesion.textContent =
