@@ -603,6 +603,7 @@ button:focus-visible {
   background: #dc2626;
 }
 
+
 /* Botón flotante de WhatsApp */
 
 .whatsapp-flotante {
@@ -610,18 +611,30 @@ button:focus-visible {
   right: 24px;
   bottom: 24px;
   z-index: 1040;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.7rem 1rem 0.7rem 0.75rem;
+
+  display: grid;
+  place-items: center;
+
+  width: 62px;
+  height: 62px;
+  padding: 0;
+
   color: #ffffff;
-  background: linear-gradient(135deg, #25d366, #128c4a);
-  border: 1px solid rgb(255 255 255 / 25%);
-  border-radius: 999px;
+  background: #25d366;
+  border: 2px solid rgb(255 255 255 / 35%);
+  border-radius: 50%;
+
   box-shadow:
-    0 12px 30px rgb(18 140 74 / 30%),
-    0 4px 12px rgb(15 23 42 / 15%);
+    0 10px 25px rgb(18 140 74 / 35%),
+    0 4px 10px rgb(15 23 42 / 20%);
+
   text-decoration: none;
+
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
   animation:
     whatsapp-entrada 0.4s ease-out,
     whatsapp-pulso 3s 1s infinite;
@@ -629,48 +642,53 @@ button:focus-visible {
 
 .whatsapp-flotante:hover {
   color: #ffffff;
-  background: linear-gradient(135deg, #20bd5a, #0f7a3f);
+  background: #20bd5a;
+
   box-shadow:
-    0 16px 36px rgb(18 140 74 / 38%),
-    0 6px 16px rgb(15 23 42 / 18%);
-  transform: translateY(-4px);
+    0 14px 30px rgb(18 140 74 / 42%),
+    0 6px 14px rgb(15 23 42 / 22%);
+
+  transform: translateY(-4px) scale(1.05);
+}
+
+.whatsapp-flotante:focus-visible {
+  color: #ffffff;
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
 }
 
 .whatsapp-icono {
   display: grid;
   place-items: center;
-  flex: 0 0 auto;
-  width: 42px;
-  height: 42px;
+
+  width: 100%;
+  height: 100%;
+
   color: #ffffff;
-  background: rgb(255 255 255 / 16%);
+  background: transparent;
   border-radius: 50%;
 }
 
+.whatsapp-icono svg {
+  width: 34px;
+  height: 34px;
+}
+
+/* Oculta el texto y conserva el aria-label del enlace */
+
 .whatsapp-texto {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.25;
-}
-
-.whatsapp-texto strong {
-  font-size: 0.88rem;
-}
-
-.whatsapp-texto small {
-  color: rgb(255 255 255 / 85%);
-  font-size: 0.72rem;
+  display: none;
 }
 
 @keyframes whatsapp-entrada {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(20px) scale(0.8);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -678,14 +696,14 @@ button:focus-visible {
   0%,
   100% {
     box-shadow:
-      0 12px 30px rgb(18 140 74 / 30%),
-      0 0 0 0 rgb(37 211 102 / 30%);
+      0 10px 25px rgb(18 140 74 / 35%),
+      0 0 0 0 rgb(37 211 102 / 35%);
   }
 
   50% {
     box-shadow:
-      0 12px 30px rgb(18 140 74 / 30%),
-      0 0 0 10px rgb(37 211 102 / 0%);
+      0 10px 25px rgb(18 140 74 / 35%),
+      0 0 0 11px rgb(37 211 102 / 0%);
   }
 }
 
@@ -693,25 +711,21 @@ button:focus-visible {
   .whatsapp-flotante {
     right: 16px;
     bottom: 16px;
-    width: 58px;
-    height: 58px;
-    padding: 0;
-    justify-content: center;
+
+    width: 56px;
+    height: 56px;
   }
 
-  .whatsapp-icono {
-    width: 44px;
-    height: 44px;
-  }
-
-  .whatsapp-texto {
-    display: none;
+  .whatsapp-icono svg {
+    width: 31px;
+    height: 31px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .whatsapp-flotante {
     animation: none;
+    transition: none;
   }
 }
 
@@ -824,11 +838,7 @@ body[data-page="perfil"] main {
       rgba(13, 110, 253, 0.1),
       transparent 32%
     ),
-    linear-gradient(
-      180deg,
-      #f8fbff 0%,
-      #f3f6f9 100%
-    );
+    linear-gradient(180deg, #f8fbff 0%, #f3f6f9 100%);
 }
 
 .perfil-card {
@@ -845,12 +855,7 @@ body[data-page="perfil"] main {
   content: "";
   display: block;
   height: 9px;
-  background: linear-gradient(
-    90deg,
-    #0d6efd,
-    #6610f2,
-    #20c997
-  );
+  background: linear-gradient(90deg, #0d6efd, #6610f2, #20c997);
 }
 
 .perfil-encabezado {
@@ -921,12 +926,7 @@ body[data-page="perfil"] .list-group-item:hover {
   flex-wrap: wrap;
   padding: 1.75rem 2rem;
   color: #ffffff;
-  background: linear-gradient(
-    135deg,
-    #0d6efd,
-    #4956d8,
-    #6610f2
-  );
+  background: linear-gradient(135deg, #0d6efd, #4956d8, #6610f2);
 }
 
 .compras-etiqueta {

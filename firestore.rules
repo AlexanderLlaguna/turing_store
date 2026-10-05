@@ -2,69 +2,282 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    /*
+    |--------------------------------------------------------------------------
+    | FUNCIONES GENERALES
+    |--------------------------------------------------------------------------
+    */
+
     function sesionIniciada() {
       return request.auth != null;
     }
 
     function esPropietario(usuarioId) {
-      return sesionIniciada() && request.auth.uid == usuarioId;
+      return sesionIniciada()
+        && request.auth.uid == usuarioId;
     }
 
     function esAdmin() {
       return sesionIniciada()
-        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
-        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "admin";
+        && exists(
+          /databases/$(database)/documents/usuarios/$(request.auth.uid)
+        )
+        && get(
+          /databases/$(database)/documents/usuarios/$(request.auth.uid)
+        ).data.rol == "admin";
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | USUARIOS
+    |--------------------------------------------------------------------------
+    */
+
     match /usuarios/{usuarioId} {
+
       allow create: if esPropietario(usuarioId)
-        && request.resource.data.rol == "cliente";
-      allow read: if esPropietario(usuarioId) || esAdmin();
+        && request.resource.data.keys().hasAll([
+          "nombre",
+          "correo",
+          "rol",
+          "fechaRegistro"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "nombre",
+          "correo",
+          "rol",
+          "fechaRegistro",
+          "fotoPerfil",
+          "fotoGoogle",
+          "ultimoAcceso",
+          "actualizadoEn"
+        ])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 2
+        && request.resource.data.nombre.size() <= 100
+        && request.resource.data.correo is string
+        && request.resource.data.correo.size() >= 5
+        && request.resource.data.correo.size() <= 150
+        && request.resource.data.rol == "cliente"
+        && request.resource.data.fechaRegistro
+           == request.time;
+
+      allow read: if esPropietario(usuarioId)
+        || esAdmin();
+
       allow update: if esPropietario(usuarioId)
-        && request.resource.data.rol == resource.data.rol;
+        && request.resource.data.rol
+           == resource.data.rol
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 2
+        && request.resource.data.nombre.size() <= 100
+        && request.resource.data.correo is string
+        && request.resource.data
+           .diff(resource.data)
+           .affectedKeys()
+           .hasOnly([
+             "nombre",
+             "correo",
+             "fotoPerfil",
+             "fotoGoogle",
+             "ultimoAcceso",
+             "actualizadoEn"
+           ]);
+
       allow delete: if esAdmin();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCTOS
+    |--------------------------------------------------------------------------
+    */
+
     match /productos/{productoId} {
+
+      // El catálogo puede ser consultado sin iniciar sesión.
       allow read: if true;
+
+      // Solamente el administrador puede crear o eliminar productos.
       allow create, delete: if esAdmin();
-      allow update: if esAdmin() || (
-        sesionIniciada()
-        && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(["stock", "disponible", "actualizadoEn"])
-        && request.resource.data.stock is int
-        && request.resource.data.stock >= 0
-        && request.resource.data.stock <= resource.data.stock
-      );
+
+      /*
+       * El administrador puede modificar cualquier dato.
+       * Un cliente solamente puede reducir el stock durante una compra.
+       */
+      allow update: if esAdmin()
+        || (
+          sesionIniciada()
+          && request.resource.data
+             .diff(resource.data)
+             .affectedKeys()
+             .hasOnly([
+               "stock",
+               "disponible",
+               "actualizadoEn"
+             ])
+          && request.resource.data.stock is int
+          && request.resource.data.stock >= 0
+          && request.resource.data.stock
+             <= resource.data.stock
+          && request.resource.data.disponible
+             == (request.resource.data.stock > 0)
+          && request.resource.data.actualizadoEn
+             == request.time
+        );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | PEDIDOS
+    |--------------------------------------------------------------------------
+    */
+
     match /pedidos/{pedidoId} {
+
       allow create: if sesionIniciada()
-        && request.resource.data.usuarioId == request.auth.uid
-        && request.resource.data.estado == "confirmado";
-      allow read: if esPropietario(resource.data.usuarioId) || esAdmin();
+        && request.resource.data.keys().hasAll([
+          "numeroPedido",
+          "usuarioId",
+          "usuarioCorreo",
+          "productos",
+          "total",
+          "fecha",
+          "estado",
+          "pago"
+        ])
+        && request.resource.data.keys().hasOnly([
+          "numeroPedido",
+          "usuarioId",
+          "usuarioCorreo",
+          "productos",
+          "total",
+          "fecha",
+          "estado",
+          "pago"
+        ])
+        && request.resource.data.usuarioId
+           == request.auth.uid
+        && request.resource.data.numeroPedido is string
+        && request.resource.data.usuarioCorreo is string
+        && request.resource.data.productos is list
+        && request.resource.data.productos.size() > 0
+        && request.resource.data.total is number
+        && request.resource.data.total > 0
+        && request.resource.data.fecha
+           == request.time
+        && request.resource.data.estado
+           == "confirmado"
+        && request.resource.data.pago is map
+        && request.resource.data.pago.keys().hasAll([
+          "metodo",
+          "nombreMetodo",
+          "estado",
+          "referencia"
+        ])
+        && request.resource.data.pago.keys().hasOnly([
+          "metodo",
+          "nombreMetodo",
+          "estado",
+          "referencia"
+        ])
+        && request.resource.data.pago.metodo in [
+          "tarjeta",
+          "transferencia",
+          "efectivo"
+        ]
+        && request.resource.data.pago.nombreMetodo is string
+        && request.resource.data.pago.estado in [
+          "aprobado",
+          "pendiente"
+        ]
+        && request.resource.data.pago.referencia is string;
+
+      allow read: if esAdmin()
+        || (
+          sesionIniciada()
+          && resource.data.usuarioId
+             == request.auth.uid
+        );
+
       allow update, delete: if esAdmin();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | VALORACIONES
+    |--------------------------------------------------------------------------
+    */
+
     match /valoraciones/{valoracionId} {
+
+      function valoracionValida() {
+        return request.resource.data.keys().hasAll([
+            "usuarioId",
+            "usuarioNombre",
+            "productoId",
+            "puntuacion",
+            "comentario",
+            "fecha"
+          ])
+          && request.resource.data.keys().hasOnly([
+            "usuarioId",
+            "usuarioNombre",
+            "productoId",
+            "puntuacion",
+            "comentario",
+            "fecha"
+          ])
+          && request.resource.data.usuarioId is string
+          && request.resource.data.usuarioNombre is string
+          && request.resource.data.usuarioNombre.size() >= 2
+          && request.resource.data.usuarioNombre.size() <= 100
+          && request.resource.data.productoId is string
+          && request.resource.data.puntuacion is number
+          && request.resource.data.puntuacion >= 1
+          && request.resource.data.puntuacion <= 5
+          && request.resource.data.comentario is string
+          && request.resource.data.comentario.size() >= 3
+          && request.resource.data.comentario.size() <= 300
+          && request.resource.data.fecha
+             == request.time;
+      }
+
+      // Las valoraciones son públicas.
       allow read: if true;
+
       allow create: if sesionIniciada()
-        && request.resource.data.usuarioId == request.auth.uid
-        && request.resource.data.puntuacion >= 1
-        && request.resource.data.puntuacion <= 5
-        && request.resource.data.comentario is string
-        && request.resource.data.comentario.size() >= 3
-        && request.resource.data.comentario.size() <= 300;
+        && valoracionValida()
+        && request.resource.data.usuarioId
+           == request.auth.uid
+        && valoracionId
+           == request.auth.uid
+              + "_"
+              + request.resource.data.productoId
+        && exists(
+          /databases/$(database)/documents/productos/$(request.resource.data.productoId)
+        );
+
       allow update: if sesionIniciada()
-        && resource.data.usuarioId == request.auth.uid
-        && request.resource.data.usuarioId == request.auth.uid
-        && request.resource.data.puntuacion >= 1
-        && request.resource.data.puntuacion <= 5
-        && request.resource.data.comentario is string
-        && request.resource.data.comentario.size() >= 3
-        && request.resource.data.comentario.size() <= 300;
+        && valoracionValida()
+        && resource.data.usuarioId
+           == request.auth.uid
+        && request.resource.data.usuarioId
+           == resource.data.usuarioId
+        && request.resource.data.productoId
+           == resource.data.productoId
+        && valoracionId
+           == request.auth.uid
+              + "_"
+              + resource.data.productoId;
+
       allow delete: if esAdmin()
-        || (sesionIniciada() && resource.data.usuarioId == request.auth.uid);
+        || (
+          sesionIniciada()
+          && resource.data.usuarioId
+             == request.auth.uid
+        );
     }
   }
 }
