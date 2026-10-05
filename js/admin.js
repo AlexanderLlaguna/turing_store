@@ -85,9 +85,13 @@ async function actualizarPanel() {
         (pedido) => `
             <tr>
               <td>
-                <small>${pedido.id}</small>
-              </td>
-
+  <small>
+    ${escaparHTML(
+          pedido.numeroPedido ||
+          pedido.id
+        )}
+  </small>
+</td>
               <td>
                 ${escaparHTML(
           pedido.usuarioCorreo ||
