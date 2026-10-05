@@ -235,7 +235,7 @@ Los pedidos nuevos utilizan un número más legible con un formato similar a:
 TS-20260921-247509
 ```
 
-Los pedidos anteriores continúan siendo compatibles y muestran una versión corta de su identificador de Firestore.
+Los pedidos anteriores continúan siendo compatibles y muestran su identificador interno de Firestore cuando no poseen un número comercial.
 
 ### Valoraciones
 
@@ -247,12 +247,16 @@ Los pedidos anteriores continúan siendo compatibles y muestran una versión cor
 - Almacenamiento en Cloud Firestore.
 - Sustitución de la valoración anterior cuando el mismo usuario vuelve a valorar.
 
-### Administración
+#### Administración
 
 - Acceso protegido según el rol.
-- Carga inicial de productos.
+- Visualización de la cantidad total de productos.
+- Visualización de la cantidad total de pedidos.
+- Consulta de pedidos ordenados desde el más reciente.
+- Visualización del número comercial de cada pedido.
+- Compatibilidad con pedidos antiguos mediante su identificador de Firestore.
+- Carga inicial de productos disponible únicamente cuando el catálogo está vacío.
 - Gestión de productos almacenados en Firestore.
-- Consulta de pedidos.
 - Restricción del panel para usuarios que no poseen el rol `admin`.
 
 ### Accesibilidad visual
@@ -415,6 +419,10 @@ Las reglas deben publicarse desde Firebase Console para que tengan efecto.
 - Los botones de aumento, disminución y restablecimiento funcionan correctamente.
 - La preferencia visual permanece guardada al cambiar de página o recargar el sitio.
 - La barra de navegación mantiene correctamente el orden de sus elementos.
+- El panel administrativo muestra correctamente los pedidos recientes.
+- Los pedidos nuevos muestran su número comercial con formato `TS-AAAAMMDD-######`.
+- Los pedidos antiguos continúan siendo visibles mediante su identificador de Firestore.
+- El botón de carga inicial se oculta cuando ya existen productos.
 
 ## Decisiones de diseño
 
