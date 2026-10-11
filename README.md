@@ -81,7 +81,7 @@ turing_store/
 - `pages/carrito.html`: administración y confirmación del carrito.
 - `pages/login.html`: registro, inicio de sesión, acceso con Google y recuperación de contraseña.
 - `pages/perfil.html`: información del cliente, foto de perfil, edición del nombre e historial de compras.
-- `pages/admin.html`: gestión administrativa de productos y pedidos.
+- `pages/admin.html`: gestión administrativa con resumen de productos y pedidos, listado de pedidos recientes y carga inicial de productos cuando la colección está vacía. 
 
 ## Organización de JavaScript
 
@@ -250,14 +250,13 @@ Los pedidos anteriores continúan siendo compatibles y muestran su identificador
 #### Administración
 
 - Acceso protegido según el rol.
-- Visualización de la cantidad total de productos.
-- Visualización de la cantidad total de pedidos.
+- Visualización de la cantidad total de productos y pedidos.
 - Consulta de pedidos ordenados desde el más reciente.
 - Visualización del número comercial de cada pedido.
 - Compatibilidad con pedidos antiguos mediante su identificador de Firestore.
 - Carga inicial de productos disponible únicamente cuando el catálogo está vacío.
-- Gestión de productos almacenados en Firestore.
 - Restricción del panel para usuarios que no poseen el rol `admin`.
+- El panel no incluye opciones para crear, editar o eliminar productos manualmente. Opción a futuro para mejorar la página crear un CRUD. 
 
 ### Accesibilidad visual
 
