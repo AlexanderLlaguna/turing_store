@@ -444,3 +444,31 @@ Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías
 - Seguimiento administrativo del estado de los pedidos.
 - Optimización adicional de imágenes.
 - Publicación de una versión estable del proyecto.
+
+
+# Turing Store - Sprint 4
+
+## Sprint 4 - Roles y acceso administrativo
+
+### Avance al 18/10
+
+- Registro automático de nuevos usuarios con el rol cliente.
+- Asignación manuela del rol admin desde Firestore.
+- Consulta del rol del usuario después de iniciar sesión.
+- Enlace de administración visible únicamente para administradores.
+- Comprobación de permisos al acceder directamente a admin.html.
+- Redirección al login cuando no existe una ssesión iniciada.
+- Mensaje de acceso denegado y redireccionamiento al inicio para usuarios sin permisos. 
+
+### Comprobaciones realizadas.
+
+- Cuenta nueva registrada con el rol cliente en Firestore.
+- Cliente sin enlace de administración.
+- Acceso directo del cliente bloquedao, con mensaje y redireccionamiento
+- Acceso sin sesión redirigidio al login.
+
+### Pendiente para los próximos avances. 
+
+- Listado, creación y edición de productos desde administración.
+- Revisión final de reglas de seguridad y recorrida proncipales. 
+- Actualización de la documetación y verificación del sitio prublicado. 
