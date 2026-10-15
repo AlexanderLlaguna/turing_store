@@ -156,7 +156,18 @@ onAuthStateChanged(
       cargando.classList.add("d-none");
 
       if (!esAdmin) {
+        contenido.classList.add("d-none");
+
+        accesoDenegado.textContent =
+          "No tienes permisos para ingresar al panel administrativo. " +
+          "Serás redirigido al inicio.";
+
         accesoDenegado.classList.remove("d-none");
+
+        setTimeout(() => {
+          window.location.replace("../index.html");
+        }, 2500);
+
         return;
       }
 
