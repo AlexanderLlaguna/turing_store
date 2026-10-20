@@ -172,6 +172,25 @@ async function actualizarPedidos() {
             <span class="badge text-bg-success text-capitalize">
               ${escaparHTML(pedido.estado)}
             </span>
+<div class="small text-secondary mt-2">
+  <strong>Pago:</strong>
+  ${escaparHTML(
+      pedido.pago?.nombreMetodo ||
+      pedido.pago?.metodo ||
+      "No registrado"
+    )}
+</div>
+
+<div class="small mt-1">
+  <strong>Estado del pago:</strong>
+  <span class="text-capitalize">
+    ${escaparHTML(
+      pedido.pago?.estado ||
+      "No registrado"
+    )}
+  </span>
+</div>
+
           </td>
           <td>
             <strong>${formatearPrecio(pedido.total)}</strong>
