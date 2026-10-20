@@ -256,7 +256,7 @@ Los pedidos anteriores continúan siendo compatibles y muestran su identificador
 - Compatibilidad con pedidos antiguos mediante su identificador de Firestore.
 - Carga inicial de productos disponible únicamente cuando el catálogo está vacío.
 - Restricción del panel para usuarios que no poseen el rol `admin`.
-- El panel no incluye opciones para crear, editar o eliminar productos manualmente. Opción a futuro para mejorar la página crear un CRUD. 
+
 
 ### Accesibilidad visual
 
@@ -472,3 +472,23 @@ Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías
 - Listado, creación y edición de productos desde administración.
 - Revisión final de reglas de seguridad y recorrida proncipales. 
 - Actualización de la documetación y verificación del sitio prublicado. 
+
+
+## Sprint 4 - Gestión de productos
+
+### Funcionalidades implementadas
+
+- Listado administrativo con nombre, categoría, precio, stock y disponibilidad.
+- Creación de productos desde un formulario.
+- Edición de productos existentes.
+- Validación de campos obligatorios, precio positivo y stock entero no negativo.
+- Disponibilidad calculada según el stock.
+- Mensajes de éxito y error.
+- Bloqueo del formulario mientras se guarda.
+- Cambios almacenados en Firestore y visibles en el catálogo.
+
+### Comprobaciones realizadas
+
+- Edición de un producto existente.
+- Creación de un producto nuevo con imagen.
+- Rechazo de precio cero, stock negativo o decimal y nombre vacío.
