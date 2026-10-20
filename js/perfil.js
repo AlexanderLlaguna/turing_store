@@ -694,6 +694,29 @@ async function cargarPedidos(usuarioId) {
                                 .join("")}
                                     </ul>
 
+<div class="bg-light rounded p-3 mb-3">
+    <p class="mb-1">
+        <strong>Forma de pago:</strong>
+        ${escaparHTML(
+                                    pedido.pago?.nombreMetodo ||
+                                    pedido.pago?.metodo ||
+                                    "No registrada"
+                                )}
+    </p>
+
+    <p class="mb-0">
+        <strong>Estado del pago:</strong>
+        <span class="text-capitalize">
+            ${escaparHTML(
+                                    pedido.pago?.estado ||
+                                    "No registrado"
+                                )}
+        </span>
+    </p>
+</div>
+
+                                    
+
                                     <div class="text-end">
                                         <span class="me-2">
                                             Total:

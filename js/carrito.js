@@ -763,6 +763,23 @@ async function registrarCompra(datosPago) {
     );
   }
 
+  if (
+    !Array.isArray(carrito) ||
+    carrito.some((item) =>
+      !item ||
+      typeof item.id !== "string" ||
+      !item.id ||
+      item.id.includes("/") ||
+      !Number.isSafeInteger(item.cantidad) ||
+      item.cantidad < 1
+    ) ||
+    new Set(carrito.map((item) => item.id)).size !== carrito.length
+  ) {
+    throw new Error(
+      "El carrito contiene datos inválidos. Vacialo y agregá los productos nuevamente."
+    );
+  }
+
   if (!carrito.length) {
     throw new Error(
       "El carrito está vacío."
