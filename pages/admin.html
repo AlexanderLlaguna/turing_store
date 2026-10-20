@@ -1,193 +1,271 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
 
-    <link rel="stylesheet" href="../css/styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <title>Turing Store | Administración</title>
-  </head>
+  <link rel="stylesheet" href="../css/styles.css" />
 
-  <body class="d-flex flex-column min-vh-100" data-page="admin">
-    <nav
-      class="navbar navbar-expand-lg navbar-dark sticky-top"
-      aria-label="Navegación principal"
-    >
-      <div class="container">
-        <a class="navbar-brand" href="../index.html">
-          <img class="brand-logo" src="../assets/logo-turing.svg" alt="" />
-          <span>Turing Store</span>
-        </a>
+  <title>Turing Store | Administración</title>
+</head>
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNav"
-          aria-controls="mainNav"
-          aria-expanded="false"
-          aria-label="Abrir menú de navegación"
-        >
-          <span class="navbar-toggler-icon"></span>
+<body class="d-flex flex-column min-vh-100" data-page="admin">
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top" aria-label="Navegación principal">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">
+        <img class="brand-logo" src="../assets/logo-turing.svg" alt="" />
+        <span>Turing Store</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menú de navegación">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" data-page="inicio" href="../index.html">
+              Inicio
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" data-page="catalogo" href="catalogo.html">
+              Catálogo
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" data-page="carrito" href="carrito.html">
+              Carrito
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" data-page="perfil" href="perfil.html">
+              Mi perfil
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" data-page="admin" href="admin.html">
+              Administración
+            </a>
+          </li>
+        </ul>
+
+        <button class="btn btn-login btn-sm" id="btnLoginPlaceholder" type="button">
+          Ingresar
         </button>
+      </div>
+    </div>
+  </nav>
 
-        <div class="collapse navbar-collapse" id="mainNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" data-page="inicio" href="../index.html">
-                Inicio
-              </a>
-            </li>
+  <main class="flex-grow-1">
+    <div class="container py-5">
+      <div id="cargandoAdmin" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Comprobando permisos…</span>
+        </div>
+        <p class="mt-3">Comprobando permisos de administración…</p>
+      </div>
 
-            <li class="nav-item">
-              <a class="nav-link" data-page="catalogo" href="catalogo.html">
-                Catálogo
-              </a>
-            </li>
+      <section id="accesoDenegado" class="alert alert-danger d-none" role="alert">
+        No tienes permisos para ingresar al panel administrativo.
+      </section>
 
-            <li class="nav-item">
-              <a class="nav-link" data-page="carrito" href="carrito.html">
-                Carrito
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" data-page="perfil" href="perfil.html">
-                Mi perfil
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" data-page="admin" href="admin.html">
-                Administración
-              </a>
-            </li>
-          </ul>
-
-          <button
-            class="btn btn-login btn-sm"
-            id="btnLoginPlaceholder"
-            type="button"
-          >
-            Ingresar
+      <section id="contenidoAdmin" class="d-none">
+        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4">
+          <div>
+            <span class="badge rounded-pill text-bg-warning mb-2">Sprint 3</span>
+            <h1>Panel administrativo</h1>
+            <p class="lead mb-0">
+              Productos, stock y pedidos registrados en Firestore.
+            </p>
+          </div>
+          <button class="btn btn-primary" id="btnCargarProductos" type="button">
+            Cargar productos iniciales
           </button>
         </div>
-      </div>
-    </nav>
 
-    <main class="flex-grow-1">
-      <div class="container py-5">
-        <div id="cargandoAdmin" class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Comprobando permisos…</span>
+        <div class="row g-3 mb-5">
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <small class="text-secondary">Productos</small>
+                <strong class="display-6 d-block" id="totalProductos">0</strong>
+              </div>
+            </div>
           </div>
-          <p class="mt-3">Comprobando permisos de administración…</p>
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <small class="text-secondary">Pedidos</small>
+                <strong class="display-6 d-block" id="totalPedidos">0</strong>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <section
-          id="accesoDenegado"
-          class="alert alert-danger d-none"
-          role="alert"
-        >
-          No tienes permisos para ingresar al panel administrativo.
+        <section class="mb-5" aria-labelledby="tituloFormularioProducto">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h2 class="h3 mb-4" id="tituloFormularioProducto">
+                Crear producto
+              </h2>
+
+              <div id="mensajeProducto" class="alert d-none" role="status" aria-live="polite"></div>
+
+              <form id="formProducto">
+                <fieldset id="camposProducto">
+                  <input type="hidden" id="productoId" />
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label for="productoNombre" class="form-label">
+                        Nombre
+                      </label>
+                      <input type="text" class="form-control" id="productoNombre" required minlength="2"
+                        maxlength="100" />
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="productoCategoria" class="form-label">
+                        Categoría
+                      </label>
+                      <select class="form-select" id="productoCategoria" required>
+                        <option value="">Seleccioná una categoría</option>
+                        <option value="Periféricos">Periféricos</option>
+                        <option value="Audio">Audio</option>
+                        <option value="Almacenamiento">Almacenamiento</option>
+                        <option value="Conectividad">Conectividad</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="productoPrecio" class="form-label">
+                        Precio ($ UYU)
+                      </label>
+                      <input type="number" class="form-control" id="productoPrecio" min="0.01" step="0.01" required />
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="productoStock" class="form-label">
+                        Stock
+                      </label>
+                      <input type="number" class="form-control" id="productoStock" min="0" step="1" required />
+                      <div class="form-text">
+                        La disponibilidad se calculará según el stock.
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="productoDescripcion" class="form-label">
+                        Descripción
+                      </label>
+                      <textarea class="form-control" id="productoDescripcion" rows="3" maxlength="1000"
+                        required></textarea>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="productoImagen" class="form-label">
+                        Ruta o enlace de la imagen
+                      </label>
+                      <input type="text" class="form-control" id="productoImagen"
+                        placeholder="../assets/teclado_mecanico_T_80.jpg" maxlength="2000" required
+                        aria-describedby="ayudaImagenProducto" />
+                      <div class="form-text" id="ayudaImagenProducto">
+                        Usá una imagen de assets con la ruta ../assets/nombre.jpg
+                        o un enlace HTTPS.
+                      </div>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2 flex-wrap">
+                      <button class="btn btn-primary" id="btnGuardarProducto" type="submit">
+                        Crear producto
+                      </button>
+
+                      <button class="btn btn-outline-secondary" id="btnCancelarEdicion" type="button" hidden>
+                        Cancelar edición
+                      </button>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
         </section>
 
-        <section id="contenidoAdmin" class="d-none">
-          <div
-            class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4"
-          >
-            <div>
-              <span class="badge rounded-pill text-bg-warning mb-2"
-                >Sprint 3</span
-              >
-              <h1>Panel administrativo</h1>
-              <p class="lead mb-0">
-                Productos, stock y pedidos registrados en Firestore.
-              </p>
-            </div>
-            <button
-              class="btn btn-primary"
-              id="btnCargarProductos"
-              type="button"
-            >
-              Cargar productos iniciales
-            </button>
-          </div>
+        <section class="mb-5" aria-labelledby="tituloListadoProductos">
+          <h2 class="h3" id="tituloListadoProductos">
+            Productos del catálogo
+          </h2>
 
-          <div class="row g-3 mb-5">
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <small class="text-secondary">Productos</small>
-                  <strong class="display-6 d-block" id="totalProductos"
-                    >0</strong
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <small class="text-secondary">Pedidos</small>
-                  <strong class="display-6 d-block" id="totalPedidos">0</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <h2 class="h3">Pedidos recientes</h2>
           <div class="table-responsive">
             <table class="table table-striped align-middle">
               <thead>
                 <tr>
-                  <th>Pedido</th>
-                  <th>Usuario</th>
-                  <th>Fecha</th>
-                  <th>Estado</th>
-                  <th>Total</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Categoría</th>
+                  <th scope="col">Precio</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Disponibilidad</th>
+                  <th scope="col">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="tablaPedidos"></tbody>
+              <tbody id="tablaProductos"></tbody>
             </table>
           </div>
         </section>
-      </div>
-    </main>
 
-    <footer class="footer py-4 mt-auto">
-      <div class="container d-flex justify-content-between flex-wrap gap-2">
-        <span>© 2026 Turing Store · Sprint 3</span>
-        <span>Firebase, pedidos y administración</span>
-      </div>
-    </footer>
-
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      <div id="appToast" class="toast">
-        <div class="toast-header">
-          <strong class="me-auto">Turing Store</strong>
-
-          <button
-            class="btn-close"
-            data-bs-dismiss="toast"
-            aria-label="Cerrar"
-          ></button>
+        <h2 class="h3">Pedidos recientes</h2>
+        <div class="table-responsive">
+          <table class="table table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Pedido</th>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPedidos"></tbody>
+          </table>
         </div>
-
-        <div class="toast-body" id="toastMessage"></div>
-      </div>
+      </section>
     </div>
+  </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/base.js"></script>
-    <script type="module" src="../js/sesion.js"></script>
-    <script type="module" src="../js/admin.js"></script>
-  </body>
+  <footer class="footer py-4 mt-auto">
+    <div class="container d-flex justify-content-between flex-wrap gap-2">
+      <span>© 2026 Turing Store · Sprint 3</span>
+      <span>Firebase, pedidos y administración</span>
+    </div>
+  </footer>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="appToast" class="toast">
+      <div class="toast-header">
+        <strong class="me-auto">Turing Store</strong>
+
+        <button class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="toast-body" id="toastMessage"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/base.js"></script>
+  <script type="module" src="../js/sesion.js"></script>
+  <script type="module" src="../js/admin.js"></script>
+</body>
+
 </html>
