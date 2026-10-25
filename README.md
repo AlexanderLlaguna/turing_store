@@ -1,6 +1,65 @@
-# Turing Store - Sprint 3
+# Turing Store — entrega final del Sprint 4
 
 Proyecto web orientado a la venta de accesorios informáticos.
+
+
+## Entrega del Sprint 4
+
+- **Enlace de GitHub Pages:** https://alexanderllaguna.github.io/turing_store/
+  (comprobado: responde HTTP 200; resta verificar los recorridos completos).
+- **Cliente:** consulta el catálogo, compra y accede únicamente a sus pedidos.
+- **Administrador:** además puede consultar, crear y editar productos y consultar pedidos.
+- Las cuentas nuevas reciben el rol `cliente`. El primer `admin` se asigna manualmente desde Firebase Console.
+- La interfaz oculta el enlace administrativo a clientes y comprueba permisos al abrir directamente `admin.html`. Las reglas de Firestore aplican los permisos sobre los datos.
+
+### Seguridad de las compras
+
+El pedido y la actualización de stock se guardan en una misma transacción.
+Las reglas comprueban la relación entre cada producto y el pedido nuevo, cantidades enteras positivas, precio, subtotal y total.
+Un cliente no puede descontar stock sin crear el pedido correspondiente ni crear un pedido sin actualizar su stock.
+Los pedidos existentes siguen siendo consultables.
+
+### Limitaciones conocidas
+
+- Los pagos son simulados; no se procesa dinero.
+- Cada compra admite hasta **8 productos distintos** para respetar el límite de consultas de las reglas de Firestore. Las unidades de cada producto dependen de su stock.
+- Las imágenes administrativas se indican mediante una ruta de assets o un enlace HTTPS; el formulario no sube archivos.
+- No se incluye edición del estado de los pedidos.
+- La publicación de estas reglas en Firebase y las comprobaciones en teléfono y en el sitio público deben realizarse antes de la entrega.
+
+### Cuentas de evaluación
+
+Crear dos cuentas destinadas exclusivamente a la evaluación y completar esta información antes de entregar:
+
+| Cuenta | Correo | Rol |
+|---|---|---|
+| Cliente de evaluación | Pendiente de completar | `cliente` |
+| Administrador de evaluación | Pendiente de completar | `admin` |
+
+Entregar los datos de acceso por el canal privado indicado por el docente.
+No publicar contraseñas personales, claves privadas ni credenciales sensibles en este repositorio.
+
+### Publicación coordinada
+
+1. Probar esta versión con las reglas nuevas en el emulador.
+2. Programar una breve pausa de compras y conservar una copia de las reglas activas.
+3. Publicar la nueva versión del sitio y el archivo `firestore.rules` en Firebase Console → Firestore → Reglas.
+4. Verificar una compra con la versión nueva. Las pestañas antiguas deben recargarse.
+5. Si se revierte la entrega, revertir el sitio y las reglas juntos.
+
+El cambio de código en GitHub no publica por sí solo las reglas en Firebase.
+
+### Recorrida final pendiente
+
+- [ ] Confirmar el enlace público y autorizar su dominio en Firebase Authentication.
+- [ ] Probar registro, ingreso y cierre de sesión.
+- [ ] Probar como cliente el acceso directo a admin.html y como visitante sin sesión.
+- [ ] Crear y editar productos con la cuenta admin; comprobarlos en el catálogo.
+- [ ] Recorrer catálogo, detalle, carrito, confirmación e historial.
+- [ ] Comprobar que otro cliente no puede consultar un pedido ajeno.
+- [ ] Comprobar páginas principales desde un teléfono y corregir errores de consola/enlaces.
+- [ ] Completar las cuentas exclusivas de evaluación.
+
 
 ## Descripción
 
@@ -437,13 +496,13 @@ La lógica JavaScript se distribuyó en archivos separados para facilitar la lec
 
 Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías se redimensionan, comprimen y almacenan en el documento del usuario en Cloud Firestore, sin utilizar Firebase Storage.
 
-## Próximas mejoras
+## Mejoras opcionales futuras
 
 - Pruebas automatizadas.
 - Evaluación de compatibilidad con lectores de pantalla.
 - Seguimiento administrativo del estado de los pedidos.
 - Optimización adicional de imágenes.
-- Publicación de una versión estable del proyecto.
+- Verificación de la versión final publicada.
 
 
 # Turing Store - Sprint 4
@@ -453,25 +512,25 @@ Para mantener el proyecto dentro del plan gratuito de Firebase, las fotografías
 ### Avance al 18/10
 
 - Registro automático de nuevos usuarios con el rol cliente.
-- Asignación manuela del rol admin desde Firestore.
+- Asignación manual del rol admin desde Firestore.
 - Consulta del rol del usuario después de iniciar sesión.
 - Enlace de administración visible únicamente para administradores.
 - Comprobación de permisos al acceder directamente a admin.html.
-- Redirección al login cuando no existe una ssesión iniciada.
+- Redirección al login cuando no existe una sesión iniciada.
 - Mensaje de acceso denegado y redireccionamiento al inicio para usuarios sin permisos. 
 
 ### Comprobaciones realizadas.
 
 - Cuenta nueva registrada con el rol cliente en Firestore.
 - Cliente sin enlace de administración.
-- Acceso directo del cliente bloquedao, con mensaje y redireccionamiento
-- Acceso sin sesión redirigidio al login.
+- Acceso directo del cliente bloqueado, con mensaje y redireccionamiento
+- Acceso sin sesión redirigido al login.
 
-### Pendiente para los próximos avances. 
+### Estado de esos avances
 
-- Listado, creación y edición de productos desde administración.
-- Revisión final de reglas de seguridad y recorrida proncipales. 
-- Actualización de la documetación y verificación del sitio prublicado. 
+- Listado, creación y edición de productos implementados (ver siguiente sección).
+- Reglas de compra reforzadas en esta entrega; requieren publicación en Firebase.
+- Recorrida final y verificación del sitio publicado pendientes de realizar.
 
 
 ## Sprint 4 - Gestión de productos

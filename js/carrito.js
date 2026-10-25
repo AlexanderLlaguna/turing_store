@@ -769,6 +769,16 @@ async function registrarCompra(datosPago) {
     );
   }
 
+  // Ocho productos distintos mantienen las validaciones dentro del límite
+  // de consultas de las reglas. Las unidades por producto dependen del stock.
+  if (carrito.length > 8) {
+    throw new Error("Cada compra admite hasta 8 productos distintos. Dividí el carrito en dos compras.");
+  }
+  if (new Set(carrito.map(item => item.id)).size !== carrito.length ||
+      carrito.some(item => !Number.isSafeInteger(item.cantidad) || item.cantidad <= 0)) {
+    throw new Error("El carrito contiene cantidades o productos inválidos.");
+  }
+
   const numeroPedido =
     generarNumeroPedido();
 
@@ -843,7 +853,7 @@ async function registrarCompra(datosPago) {
 
       // Actualizamos el stock.
       detalles.forEach(
-        (detalle) => {
+        (detalle, indicePedido) => {
           const nuevoStock =
             detalle.stockActual
             - detalle.cantidad;
@@ -856,6 +866,8 @@ async function registrarCompra(datosPago) {
             ),
             {
               stock: nuevoStock,
+              ultimoPedidoId: referenciaPedido.id,
+              indicePedido,
               disponible:
                 nuevoStock > 0,
               actualizadoEn:
