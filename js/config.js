@@ -1,10 +1,10 @@
 import { initializeApp } from
     "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
-import { getAuth } from
+import { getAuth, connectAuthEmulator } from
     "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-import { getFirestore } from
+import { getFirestore, connectFirestoreEmulator } from
     "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -13,10 +13,28 @@ const firebaseConfig = {
     projectId: "turing-store-d12f5",
     storageBucket: "turing-store-d12f5.firebasestorage.app",
     messagingSenderId: "707005393696",
-    appId: "1:707005393696:web:0aa5cfc5413f595583c545",
+    appId: "1:707005393696:web:0aa5cfc5413f595583c545"
 };
 
-const app = initializeApp(firebaseConfig);
+const esLocal = ["localhost", "127.0.0.1"]
+    .includes(window.location.hostname);
+
+const configuracion = esLocal
+    ? {
+        apiKey: "demo-key",
+        authDomain: "demo-turing-store.firebaseapp.com",
+        projectId: "demo-turing-store"
+    }
+    : firebaseConfig;
+
+const app = initializeApp(configuracion);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+if (esLocal) {
+    connectAuthEmulator(auth, "http://127.0.0.1:9099");
+    connectFirestoreEmulator(db, "127.0.0.1", 8095);
+
+    console.info("Turing Store: usando emuladores locales");
+}
