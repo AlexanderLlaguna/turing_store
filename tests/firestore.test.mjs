@@ -31,13 +31,13 @@ beforeEach(async () => {
 
 function compra({ n = 1, id = "nuevo", cantidad = 2, total, precio = 100,
                   sinPedido = false, sinStock = false, duplicado = false,
-                  stock = 18, usuarioId = "cliente" } = {}) {
+                  stock = 18, usuarioId = "cliente", subtotal, nombre } = {}) {
   const db = env.authenticatedContext("cliente").firestore();
   const batch = writeBatch(db);
   const productos = Array.from({ length: n }, (_, i) => ({
     productoId: "p" + (duplicado ? 0 : i),
-    nombre: "Producto " + (duplicado ? 0 : i),
-    cantidad, precio, subtotal: precio * cantidad
+    nombre: nombre ?? "Producto " + (duplicado ? 0 : i),
+    cantidad, precio, subtotal: subtotal ?? precio * cantidad
   }));
   if (!sinStock) productos.forEach((item, indicePedido) => {
     batch.update(doc(db, "productos/" + item.productoId), {
@@ -90,3 +90,7 @@ test("rechaza cantidad decimal", () => assertFails(compra({ cantidad: 1.5 })));
 test("rechaza descuento que no coincide con cantidad", () => assertFails(compra({ stock: 0 })));
 test("rechaza productos duplicados", () => assertFails(compra({ n: 2, duplicado: true })));
 test("rechaza pedido a nombre de otro usuario", () => assertFails(compra({ usuarioId: "otro" })));
+
+test("rechaza subtotal alterado aunque coincida con el total", () => assertFails(compra({ subtotal: 1, total: 1 })));
+test("rechaza nombre de producto alterado", () => assertFails(compra({ nombre: "Nombre falso" })));
+

@@ -26,11 +26,8 @@ REALIZADO:
 - Comprobación de sintaxis de carrito.js y del archivo de pruebas con node --check.
 - HTTP 200 en la página principal y pages/catalogo.html publicadas.
 
-PENDIENTE (no dar por aprobado antes de publicar):
-- Ejecutar las 18 pruebas del emulador. La instalación local de herramientas
-  no pudo completarse por errores de permisos de archivos y acceso a red
-  de npm en este entorno. Las reglas aún no tienen compilación ni prueba
-  de ejecución confirmadas.
+RESULTADO DEL EMULADOR Y PENDIENTES:
+- Pruebas ejecutadas el 25/10/2026: 20 aprobadas, 0 fallidas, incluidas compras de ocho productos y rechazos de stock, nombres, precios, subtotales y totales alterados.
 - Probar la compra real de la aplicación contra el emulador y luego la versión final.
 - Completar las dos cuentas de evaluación y comprobar el diseño desde un teléfono.
 
@@ -69,3 +66,4 @@ Los pagos siguen siendo simulados y el proyecto no incorpora un backend de pago.
 El archivo en GitHub no publica automáticamente reglas en Firebase.
 La integración de GitHub devolvió HTTP 403 al intentar crear una rama, por lo
 que no fue posible crear un pull request desde esta sesión.
+

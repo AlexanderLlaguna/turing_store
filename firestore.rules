@@ -42,7 +42,10 @@ service cloud.firestore {
         && indice is int && indice >= 0 && indice < 8
         && item.productoId == productoId
         && item.cantidad is int && item.cantidad > 0
+        && item.keys().hasOnly(["productoId", "nombre", "cantidad", "precio", "subtotal"])
+        && item.nombre == resource.data.nombre
         && item.precio == resource.data.precio
+        && item.subtotal == item.precio * item.cantidad
         && resource.data.disponible == true
         && datos.stock == resource.data.stock - item.cantidad;
     }
@@ -52,15 +55,7 @@ service cloud.firestore {
       let producto = getAfter(
         /databases/$(database)/documents/productos/$(item.productoId)
       ).data;
-      return item.keys().hasOnly([
-          "productoId", "nombre", "cantidad", "precio", "subtotal"
-        ])
-        && item.productoId is string
-        && item.cantidad is int && item.cantidad > 0
-        && item.nombre == producto.nombre
-        && item.precio == producto.precio
-        && item.subtotal == item.precio * item.cantidad
-        && producto.ultimoPedidoId == pedidoId
+      return producto.ultimoPedidoId == pedidoId
         && producto.indicePedido == indice
         && producto.actualizadoEn == request.time;
     }
